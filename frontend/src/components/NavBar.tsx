@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { NavItem } from '../types';
 
 interface NavBarProps {
@@ -25,6 +25,21 @@ const NavBar = ({ items }: NavBarProps) => {
 
   const currentPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') || '/' : '/';
 
+  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMenuOpen(false);
+
+    if (href.startsWith('/') && !href.includes('.html')) {
+      event.preventDefault();
+      const normalizedHref = href.replace(/\/+$/, '') || '/';
+      const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
+
+      if (normalizedHref !== normalizedPath) {
+        window.history.pushState({}, '', href);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    }
+  };
+
   return (
     <nav className={`nav${isScrolled ? ' scrolled' : ''}`} id="navbar">
       <div className="nav-inner">
@@ -47,7 +62,7 @@ const NavBar = ({ items }: NavBarProps) => {
             const isActive = (item.href.replace(/\/+$/, '') || '/') === currentPath;
             return (
               <li key={item.href}>
-                <a href={item.href} className={isActive ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>
+                <a href={item.href} className={isActive ? 'active' : ''} onClick={(event) => handleNavClick(event, item.href)}>
                   {item.label}
                 </a>
               </li>
