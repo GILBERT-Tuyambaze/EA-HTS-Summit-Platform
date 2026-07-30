@@ -93,7 +93,7 @@ const Hero = () => {
               Register Now
               <ArrowRight className="btn-icon" size={18} />
             </a>
-            <a href="programme.html" className="btn btn-secondary">
+            <a href="/conference-programme/" className="btn btn-secondary">
               Explore Programme
             </a>
           </div>

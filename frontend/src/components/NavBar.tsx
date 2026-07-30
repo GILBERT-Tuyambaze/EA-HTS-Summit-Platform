@@ -23,12 +23,12 @@ const NavBar = ({ items }: NavBarProps) => {
     };
   }, [isMenuOpen]);
 
-  const currentPage = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() || 'index.html' : 'index.html';
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') || '/' : '/';
 
   return (
     <nav className={`nav${isScrolled ? ' scrolled' : ''}`} id="navbar">
       <div className="nav-inner">
-        <a href="index.html" className="nav-logo">
+        <a href="/" className="nav-logo">
           <div className="nav-logo-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
@@ -44,7 +44,7 @@ const NavBar = ({ items }: NavBarProps) => {
 
         <ul className={`nav-links${isMenuOpen ? ' open' : ''}`} id="nav-links">
           {items.map((item) => {
-            const isActive = item.href === currentPage || (currentPage === '' && item.href === 'index.html');
+            const isActive = (item.href.replace(/\/+$/, '') || '/') === currentPath;
             return (
               <li key={item.href}>
                 <a href={item.href} className={isActive ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>

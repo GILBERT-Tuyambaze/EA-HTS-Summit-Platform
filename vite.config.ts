@@ -6,5 +6,12 @@ export default defineConfig({
   root: 'frontend',
   build: {
     outDir: '../dist',
+    rollupOptions: {
+      input: {
+        home: 'frontend/index.html',
+        about: 'frontend/about-EA-HTS/index.html',
+        programme: 'frontend/conference-programme/index.html',
+      },
+    },
   },
 });

@@ -50,8 +50,8 @@ const Footer = () => (
         <div className="footer-col footer-col-links">
           <h3 className="footer-section-title">EXPLORE</h3>
           <div className="footer-link-list">
-            <a href="about.html">About</a>
-            <a href="programme.html">Programme</a>
+            <a href="/about-EA-HTS/">About</a>
+            <a href="/conference-programme/">Programme</a>
             <a href="demo-village.html">Demo Village</a>
             <a href="startup-awards.html">Startup Challenge</a>
             <a href="startup-awards.html#awards">Awards</a>

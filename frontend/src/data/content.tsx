@@ -1,9 +1,9 @@
 import { DemoCard, NavItem, PartnerGroup, Track } from '../types';
 
 const navItems: NavItem[] = [
-  { label: 'Home', href: 'index.html' },
-  { label: 'About', href: 'about.html' },
-  { label: 'Programme', href: 'programme.html' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about-EA-HTS/' },
+  { label: 'Programme', href: '/conference-programme/' },
   { label: 'Demo Village', href: 'demo-village.html' },
   { label: 'Startup & Awards', href: 'startup-awards.html' },
   { label: 'Side Events', href: 'side-events.html' },
