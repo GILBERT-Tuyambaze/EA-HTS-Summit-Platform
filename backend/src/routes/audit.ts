@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth.js'; import { listAuditLogs } from '../services/auditService.js';
+const router=Router();router.use((q,r,n)=>void requireAdmin(q as AuthenticatedRequest,r,n));router.get('/',async(q,r,n)=>{try{r.json({events:await listAuditLogs(Number(q.query.limit??50))})}catch(e){n(e)}});export default router;

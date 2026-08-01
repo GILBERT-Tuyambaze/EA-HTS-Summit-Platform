@@ -10,7 +10,7 @@ const CtaBanner = () => (
           Join 350+ engineers, researchers, humanitarian actors, and innovators at East Africa's premier humanitarian technology event.
         </p>
         <div className="cta-actions">
-          <a href="register.html" className="btn btn-gold cta-btn-solid">
+          <a href="/register" className="btn btn-gold cta-btn-solid">
             Register Now
             <ArrowRight className="btn-icon" />
           </a>

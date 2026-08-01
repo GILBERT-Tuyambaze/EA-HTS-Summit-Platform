@@ -1,0 +1,10 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const request = async <T>(path:string, init?:RequestInit):Promise<T> => { const token=sessionStorage.getItem('eahts-admin-token'); const response=await fetch(`${API_BASE_URL}${path}`,{...init,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{}) ,...(init?.headers??{})}}); if(!response.ok){const body=await response.json().catch(()=>({}));throw new Error(body.message??'Request failed.')} return response.json() as Promise<T> };
+export type PaymentRecord={id:string;registration_id?:string|null;amount:number;currency:string;payment_method?:string|null;reference_number?:string|null;status:'pending'|'paid'|'failed'|'refunded';created_at:string;registrations?:{full_name:string;country?:string}|null}; export type InvoiceRecord={id:string;invoice_number:string;participant_name:string;company?:string|null;amount:number;currency:string;status:string;created_at:string};
+export const getFinanceOverview=()=>request<{revenue:number;pending:number;refunds:number;paidRegistrations:number;invoices:number;transactions:number;expenses:number}>('/admin/finance/overview');
+export const listPayments=async()=> (await request<{payments:PaymentRecord[]}>('/admin/finance/payments')).payments;
+export const verifyPayment=(id:string)=>request<PaymentRecord>(`/admin/finance/payments/${id}/verify`,{method:'PATCH'});
+export const updatePaymentStatus=(id:string,status:PaymentRecord['status'])=>request<PaymentRecord>(`/admin/finance/payments/${id}/status`,{method:'PATCH',body:JSON.stringify({status})});
+export const listInvoices=async()=> (await request<{invoices:InvoiceRecord[]}>('/admin/finance/invoices')).invoices;
+export const createInvoice=(input:{registration_id?:string|null;participant_name:string;company?:string|null;amount:number;currency?:string})=>request<InvoiceRecord>('/admin/finance/invoices',{method:'POST',body:JSON.stringify(input)});
+export const getFinanceReport=()=>request<{generatedAt:string;overview:unknown;payments:PaymentRecord[];invoices:InvoiceRecord[];transactions:unknown[]}>('/admin/finance/reports');

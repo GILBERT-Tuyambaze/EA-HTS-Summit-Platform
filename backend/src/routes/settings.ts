@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth.js'; import { getSettingsConfiguration } from '../services/settingsService.js';
+const router=Router();router.use((q,r,n)=>void requireAdmin(q as AuthenticatedRequest,r,n));router.get('/',async(_q,r,n)=>{try{r.json({config:await getSettingsConfiguration()})}catch(e){n(e)}});export default router;

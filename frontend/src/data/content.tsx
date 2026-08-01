@@ -2,12 +2,13 @@ import { DemoCard, NavItem, PartnerGroup, Track } from '../types';
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '/about-EA-HTS/' },
-  { label: 'Programme', href: '/conference-programme/' },
-  { label: 'Demo Village', href: 'demo-village.html' },
-  { label: 'Startup & Awards', href: 'startup-awards.html' },
-  { label: 'Side Events', href: 'side-events.html' },
-  { label: 'Partners', href: 'partners.html' },
+  { label: 'About', href: '/about' },
+  { label: 'Programme', href: '/programme' },
+  { label: 'Register', href: '/register' },
+  { label: 'Demo Village', href: '/demo-village' },
+  { label: 'Startup & Awards', href: '/startup-awards' },
+  { label: 'Side Events', href: '/side-events' },
+  { label: 'Partners', href: '/partners' },
 ];
 
 const tracks: Track[] = [

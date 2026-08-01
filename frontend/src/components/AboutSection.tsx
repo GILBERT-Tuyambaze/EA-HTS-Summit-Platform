@@ -45,7 +45,7 @@ const AboutSection = () => (
           </div>
 
           <div className="about-cta">
-            <a href="/about-EA-HTS" className="btn btn-outline about-cta-btn">
+            <a href="/about" className="btn btn-outline about-cta-btn">
               Learn more about EA-HTS
               <ArrowRight className="btn-icon" />
             </a>

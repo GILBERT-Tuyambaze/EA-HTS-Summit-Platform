@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, CalendarDays, CalendarPlus, Clock3, Coffee, Download, Globe2, MapPin, Mic2, Rocket, Sparkles, Users } from 'lucide-react';
-import NavBar from '../components/NavBar';
-import Footer from '../components/Footer';
 import { GlassCard, SectionTitle, fadeUp } from '../components/PagePrimitives';
-import { navItems } from '../data/content';
 import '../styles/pages.css';
 
 const days = [
@@ -67,7 +64,7 @@ function ProgrammeHero() {
 
 export default function ProgrammePage() {
   const [activeTrack, setActiveTrack] = useState(0);
-  return <><NavBar items={navItems} /><main className="programme-page">
+  return <main className="programme-page">
     <ProgrammeHero />
     <section className="page-section" id="programme-overview"><div className="container"><SectionTitle eyebrow="PROGRAMME OVERVIEW" title="A shared journey from welcome to action." /><ol className="programme-flow">{['Registration', 'Opening Ceremony', 'Keynotes', 'Breakout Sessions', 'Demo Village', 'Networking', 'Awards'].map((item, index) => <li key={item}><span>{index + 1}</span>{item}</li>)}</ol></div></section>
     <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="DAILY AGENDA" title="Build your three-day summit experience." copy="Times and speakers will be confirmed with registered participants before the event." /><DailyProgramme /></div></section>
@@ -75,6 +72,6 @@ export default function ProgrammePage() {
     <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="FEATURED SPEAKERS" title="Voices from across the ecosystem." /><div className="speaker-grid">{speakers.map((speaker, index) => <GlassCard key={speaker.topic} className="speaker-card"><div className="speaker-photo"><Mic2 /><span>2027</span></div><p className="eyebrow">{speaker.org}</p><h3>{speaker.name}</h3><p>{speaker.topic}</p></GlassCard>)}</div></div></section>
     <section className="page-section"><div className="container two-section-grid"><div><SectionTitle eyebrow="WORKSHOPS" title="Designed for practical learning." /><div className="workshop-list">{[['Human-centered design lab', '120 min', 'Innovation Studio', '40 seats'], ['Responsible AI clinic', '90 min', 'Learning Hub', '60 seats'], ['Data readiness roundtable', '75 min', 'Conference Room B', '50 seats']].map(([name, duration, location, capacity]) => <GlassCard key={name}><h3>{name}</h3><p><Clock3 />{duration}<MapPin />{location}<Users />{capacity}</p></GlassCard>)}</div></div><div><SectionTitle eyebrow="DEMO VILLAGE SCHEDULE" title="See innovation in action." /><div className="demo-schedule">{[['10:30', 'Climate & Resilience Zone', 'Live early-warning demonstrations'], ['13:00', 'Health & Inclusion Zone', 'Connected care and accessibility demos'], ['15:30', 'Data & AI Zone', 'Responsible AI showcases']].map(([time, zone, activity]) => <div key={time}><time>{time}</time><div><strong>{zone}</strong><span>{activity}</span></div></div>)}</div></div></div></section>
     <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="NETWORKING" title="Conversations continue beyond the session room." /><div className="networking-grid">{[[Coffee, 'Community Breakfast'], [Coffee, 'Coffee Breaks'], [Users, 'Industry Mixer'], [Sparkles, 'Gala Dinner']].map(([Icon, label]) => { const EventIcon = Icon as typeof Coffee; return <GlassCard key={label as string}><EventIcon /><h3>{label as string}</h3><p>Space to exchange ideas, meet collaborators and build momentum.</p></GlassCard>; })}</div></div></section>
-    <section className="page-cta programme-download"><div className="container"><p className="eyebrow">PLAN YOUR EXPERIENCE</p><h2>Get the programme when it is published.</h2><p>The full agenda and calendar invites will be available closer to the Summit.</p><div><a className="btn btn-gold" href="#programme-download"><Download className="btn-icon" />Download programme PDF</a><a className="btn btn-secondary" href="#programme-download"><CalendarPlus className="btn-icon" />Add to calendar</a><a className="btn btn-secondary" href="register.html">Register now</a></div></div></section>
-  </main><Footer /></>;
+    <section className="page-cta programme-download"><div className="container"><p className="eyebrow">PLAN YOUR EXPERIENCE</p><h2>Get the programme when it is published.</h2><p>The full agenda and calendar invites will be available closer to the Summit.</p><div><a className="btn btn-gold" href="#programme-download"><Download className="btn-icon" />Download programme PDF</a><a className="btn btn-secondary" href="#programme-download"><CalendarPlus className="btn-icon" />Add to calendar</a><a className="btn btn-secondary" href="/register">Register now</a></div></div></section>
+  </main>;
 }

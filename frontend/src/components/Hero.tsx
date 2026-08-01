@@ -89,11 +89,11 @@ const Hero = () => {
           </div>
 
           <div className="hero-actions">
-            <a href="register.html" className="btn btn-gold">
+            <a href="/register" className="btn btn-gold">
               Register Now
               <ArrowRight className="btn-icon" size={18} />
             </a>
-            <a href="/conference-programme/" className="btn btn-secondary">
+            <a href="/programme" className="btn btn-secondary">
               Explore Programme
             </a>
           </div>

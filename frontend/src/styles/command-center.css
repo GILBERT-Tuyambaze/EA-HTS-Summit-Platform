@@ -1,0 +1,302 @@
+:root {
+  --command-center-overlay: rgba(3, 12, 24, 0.66);
+  --command-center-panel: rgba(7, 16, 32, 0.94);
+  --command-center-border: rgba(255, 255, 255, 0.12);
+  --command-center-text: #f7f9ff;
+  --command-center-muted: #95a3bc;
+  --command-center-input: rgba(255, 255, 255, 0.04);
+  --command-center-input-border: rgba(255, 255, 255, 0.14);
+  --command-center-primary: #2563eb;
+  --command-center-primary-hover: #1d4ed8;
+  --command-center-success: #2dd4bf;
+  --command-center-warning: #f59e0b;
+  --command-center-danger: #fb7185;
+}
+
+.command-center-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: var(--command-center-overlay);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.command-center-overlay-secondary {
+  z-index: 10000;
+}
+
+.command-center-card {
+  position: relative;
+  width: min(100%, 470px);
+  padding: 1.5rem;
+  border: 1px solid var(--command-center-border);
+  border-radius: 4px;
+  background: var(--command-center-panel);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  color: var(--command-center-text);
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.command-center-card-compact {
+  width: min(100%, 420px);
+  padding: 1.3rem;
+}
+
+.command-center-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(37, 99, 235, 0.035);
+  pointer-events: none;
+}
+
+.command-center-form-shell {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.command-center-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--command-center-text);
+  cursor: pointer;
+}
+
+.command-center-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.command-center-icon {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 4px;
+  background: var(--command-center-primary);
+  color: white;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.command-center-heading {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.command-center-eyebrow {
+  margin: 0;
+  color: #8da0bb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.command-center-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.command-center-progress {
+  height: 0.3rem;
+  margin: 1rem 0 1.05rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.command-center-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--command-center-primary);
+  transition: width 220ms ease;
+}
+
+.command-center-progress span.active {
+  width: 100%;
+}
+
+.command-center-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.command-center-intro {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.command-center-intro h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.command-center-intro p {
+  margin: 0;
+  color: var(--command-center-muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.command-center-field {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.command-center-field > span {
+  color: #c5d2e3;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.command-center-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--command-center-input-border);
+  border-radius: 4px;
+  background: var(--command-center-input);
+  color: var(--command-center-text);
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.command-center-input-shell:focus-within {
+  border-color: var(--command-center-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.command-center-input-shell input,
+.command-center-field textarea,
+.command-center-field input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--command-center-text);
+  font: inherit;
+}
+
+.command-center-input-shell input::placeholder,
+.command-center-field textarea::placeholder,
+.command-center-field input::placeholder {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.command-center-input-readonly {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.command-center-field textarea {
+  min-height: 4rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--command-center-input-border);
+  border-radius: 4px;
+  background: var(--command-center-input);
+  resize: vertical;
+}
+
+.command-center-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.command-center-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 2.8rem;
+  margin-top: 0.1rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--command-center-primary);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.command-center-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.26);
+  filter: brightness(1.02);
+}
+
+.command-center-submit:disabled {
+  opacity: 0.72;
+  cursor: progress;
+}
+
+.command-center-link {
+  border: 0;
+  background: transparent;
+  color: #9fb0c9;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.command-center-link-inline {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.command-center-error {
+  margin: 0;
+  padding: 0.72rem 0.82rem;
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #ffb48a;
+  font-size: 0.9rem;
+}
+
+.command-center-message {
+  margin: 0;
+  padding: 0.72rem 0.82rem;
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  border-radius: 4px;
+  background: rgba(45, 212, 191, 0.12);
+  color: #b8f3eb;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .command-center-card {
+    padding: 1.25rem;
+  }
+
+  .command-center-grid {
+    grid-template-columns: 1fr;
+  }
+}

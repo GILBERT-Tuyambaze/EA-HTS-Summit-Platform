@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  FINANCE_ADMIN
+  REGISTRATION_ADMIN
+}
+
+model Registration {
+  id                 String   @id @default(uuid())
+  registrationNumber String   @unique @map("registration_number")
+  fullName           String   @map("full_name")
+  email              String   @unique
+  phone              String
+  country            String
+  organization       String?
+  ieeeMember         Boolean  @default(false) @map("ieee_member")
+  participantType    String   @map("participant_type")
+  paymentStatus      String   @default("Pending") @map("payment_status")
+  paymentMethod      String?  @map("payment_method")
+  paymentReference   String?  @map("payment_reference")
+  notes              String?
+  verifiedBy         String?  @map("verified_by")
+  verifiedAt         DateTime? @map("verified_at")
+  verificationNotes  String?  @map("verification_notes")
+  lastEmailSentAt    DateTime? @map("last_email_sent_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  paymentHistory PaymentHistory[]
+  emailLogs     EmailLog[]
+
+  @@map("registrations")
+}
+
+model Admin {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  role      AdminRole
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model PaymentHistory {
+  id            String   @id @default(uuid())
+  registration  Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  registrationId String     @map("registration_id")
+  oldStatus     String   @map("old_status")
+  newStatus     String   @map("new_status")
+  changedBy     String   @map("changed_by")
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("payment_history")
+}
+
+model EmailLog {
+  id             String      @id @default(uuid())
+  registration   Registration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
+  registrationId String?     @map("registration_id")
+  emailType      String      @map("email_type")
+  brevoMessageId String?     @map("brevo_message_id")
+  status         String      @default("sent")
+  sentBy         String?     @map("sent_by")
+  sentAt         DateTime?   @map("sent_at")
+  errorMessage   String?     @map("error_message")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  @@map("email_logs")
+}

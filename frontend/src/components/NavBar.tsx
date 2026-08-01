@@ -1,4 +1,5 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { NavItem } from '../types';
 
 interface NavBarProps {
@@ -23,27 +24,14 @@ const NavBar = ({ items }: NavBarProps) => {
     };
   }, [isMenuOpen]);
 
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') || '/' : '/';
-
-  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    setIsMenuOpen(false);
-
-    if (href.startsWith('/') && !href.includes('.html')) {
-      event.preventDefault();
-      const normalizedHref = href.replace(/\/+$/, '') || '/';
-      const normalizedPath = currentPath.replace(/\/+$/, '') || '/';
-
-      if (normalizedHref !== normalizedPath) {
-        window.history.pushState({}, '', href);
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      }
-    }
-  };
+  const { pathname } = useLocation();
+  const currentPath = pathname.replace(/\/+$/, '') || '/';
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <nav className={`nav${isScrolled ? ' scrolled' : ''}`} id="navbar">
       <div className="nav-inner">
-        <a href="/" className="nav-logo">
+        <Link to="/" className="nav-logo" onClick={closeMenu}>
           <div className="nav-logo-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
@@ -55,29 +43,32 @@ const NavBar = ({ items }: NavBarProps) => {
             EA-HTS 2027
             <span>IEEE East Africa</span>
           </div>
-        </a>
+        </Link>
 
         <ul className={`nav-links${isMenuOpen ? ' open' : ''}`} id="nav-links">
           {items.map((item) => {
             const isActive = (item.href.replace(/\/+$/, '') || '/') === currentPath;
+            if (!item.href.startsWith('/')) {
+              return <li key={item.href}><a href={item.href} className={isActive ? 'active' : ''} onClick={closeMenu}>{item.label}</a></li>;
+            }
             return (
               <li key={item.href}>
-                <a href={item.href} className={isActive ? 'active' : ''} onClick={(event) => handleNavClick(event, item.href)}>
+                <Link to={item.href} className={isActive ? 'active' : ''} onClick={closeMenu}>
                   {item.label}
-                </a>
+                </Link>
               </li>
             );
           })}
         </ul>
 
         <div className="nav-cta">
-          <a href="register.html" className="btn btn-gold">
+          <Link to="/register" className="btn btn-gold" onClick={closeMenu}>
             Register
             <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
             </svg>
-          </a>
+          </Link>
         </div>
 
         <button

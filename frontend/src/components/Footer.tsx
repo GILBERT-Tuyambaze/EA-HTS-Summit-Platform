@@ -1,7 +1,35 @@
 import { Globe, Mail, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import CommandCenterModal from './CommandCenterModal';
+import { clearAdminSession, verifyAdminSession } from '../services/registrationService';
 
-const Footer = () => (
-  <footer className="footer">
+const Footer = () => {
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(false);
+  const [sessionMessage, setSessionMessage] = useState('');
+
+  const handleOpenCommandCenter = async () => {
+    setIsCheckingSession(true);
+    setSessionMessage('');
+
+    try {
+      await verifyAdminSession();
+      window.location.assign('/admin');
+    } catch (error) {
+      clearAdminSession();
+      setSessionMessage(error instanceof Error && error.message.toLowerCase().includes('expired')
+        ? 'Your secure session has expired. Please sign in again.'
+        : '');
+      setIsCommandCenterOpen(true);
+    } finally {
+      setIsCheckingSession(false);
+    }
+  };
+
+  return (
+    <>
+      <footer className="footer">
     <div className="footer-container">
       <div className="footer-grid">
         <div className="footer-col footer-col-brand">
@@ -50,19 +78,19 @@ const Footer = () => (
         <div className="footer-col footer-col-links">
           <h3 className="footer-section-title">EXPLORE</h3>
           <div className="footer-link-list">
-            <a href="/about-EA-HTS/">About</a>
-            <a href="/conference-programme/">Programme</a>
-            <a href="demo-village.html">Demo Village</a>
-            <a href="startup-awards.html">Startup Challenge</a>
-            <a href="startup-awards.html#awards">Awards</a>
-            <a href="partners.html">Partners</a>
+            <Link to="/about">About</Link>
+            <Link to="/programme">Programme</Link>
+            <Link to="/demo-village">Demo Village</Link>
+            <Link to="/startup-awards">Startup Challenge</Link>
+            <Link to="/startup-awards#awards">Awards</Link>
+            <Link to="/partners">Partners</Link>
           </div>
         </div>
 
         <div className="footer-col footer-col-links">
           <h3 className="footer-section-title">GET INVOLVED</h3>
           <div className="footer-link-list">
-            <a href="register.html">Register to attend</a>
+            <Link to="/register">Register to attend</Link>
             <a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry">Become a partner</a>
             <a href="mailto:ieeeahts27@gmail.com?subject=Startup%20Challenge%20Application">Enter the Startup Challenge</a>
             <a href="mailto:ieeeahts27@gmail.com?subject=Speaker%20Inquiry">Speak at the Summit</a>
@@ -90,10 +118,31 @@ const Footer = () => (
 
       <div className="footer-bottom-bar">
         <span>© 2027 IEEE East African Humanitarian Technology Summit. All rights reserved.</span>
-        <span className="footer-bottom-right">Innovate · Connect · Impact</span>
+        <div className="footer-bottom-right">
+          <span className="footer-micro-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+          </span>
+          <button type="button" className="footer-command-pill" onClick={() => { void handleOpenCommandCenter(); }}>
+            <span className="footer-command-pill-dot" />
+            {isCheckingSession ? 'Checking session…' : 'Command Center'}
+          </button>
+        </div>
       </div>
     </div>
   </footer>
-);
+
+      <CommandCenterModal
+        open={isCommandCenterOpen}
+        onClose={() => {
+          setIsCommandCenterOpen(false);
+          setSessionMessage('');
+        }}
+        sessionMessage={sessionMessage}
+      />
+    </>
+  );
+};
 
 export default Footer;
