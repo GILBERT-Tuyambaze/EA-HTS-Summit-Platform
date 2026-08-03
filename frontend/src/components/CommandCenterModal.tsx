@@ -156,6 +156,13 @@ export default function CommandCenterModal({ open, onClose, sessionMessage }: Co
                 <X size={16} />
               </button>
 
+              <div className="command-center-aurora" aria-hidden="true">
+                <span className="fusion-core" />
+                <span className="fusion-ring fusion-ring-a" />
+                <span className="fusion-ring fusion-ring-b" />
+                <span className="fusion-ring fusion-ring-c" />
+              </div>
+
               <div className="command-center-header">
                 <div className="command-center-icon">
                   <ShieldCheck size={18} />

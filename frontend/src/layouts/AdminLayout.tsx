@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminLoadingState from '../components/AdminLoadingState';
-import NotFoundPage from '../pages/NotFoundPage';
+import CommandCenterModal from '../components/CommandCenterModal';
 import { getAdminSession, verifyAdminSession } from '../services/registrationService';
 
 export default function AdminLayout() {
@@ -59,7 +59,16 @@ export default function AdminLayout() {
   }
 
   if (!isAuthorized) {
-    return <NotFoundPage />;
+    return (
+      <>
+        <CommandCenterModal
+          open={!isChecking && !isAuthorized}
+          onClose={() => {
+            window.location.assign('/');
+          }}
+        />
+      </>
+    );
   }
 
   return <Outlet />;

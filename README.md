@@ -202,3 +202,4 @@ The project follows a clear separation of concerns:
 - Frontend handles presentation and user interaction
 - Backend handles business logic, security, and integrations
 - Supabase manages persistence and schema evolution
+

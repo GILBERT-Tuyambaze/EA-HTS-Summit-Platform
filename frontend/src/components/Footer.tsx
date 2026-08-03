@@ -1,35 +1,9 @@
 import { Globe, Mail, MapPin } from 'lucide-react';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import CommandCenterModal from './CommandCenterModal';
-import { clearAdminSession, verifyAdminSession } from '../services/registrationService';
 
 const Footer = () => {
-  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false);
-  const [isCheckingSession, setIsCheckingSession] = useState(false);
-  const [sessionMessage, setSessionMessage] = useState('');
-
-  const handleOpenCommandCenter = async () => {
-    setIsCheckingSession(true);
-    setSessionMessage('');
-
-    try {
-      await verifyAdminSession();
-      window.location.assign('/admin');
-    } catch (error) {
-      clearAdminSession();
-      setSessionMessage(error instanceof Error && error.message.toLowerCase().includes('expired')
-        ? 'Your secure session has expired. Please sign in again.'
-        : '');
-      setIsCommandCenterOpen(true);
-    } finally {
-      setIsCheckingSession(false);
-    }
-  };
-
   return (
-    <>
-      <footer className="footer">
+    <footer className="footer">
     <div className="footer-container">
       <div className="footer-grid">
         <div className="footer-col footer-col-brand">
@@ -124,24 +98,10 @@ const Footer = () => {
             <a href="#">Terms</a>
             <a href="#">Contact</a>
           </span>
-          <button type="button" className="footer-command-pill" onClick={() => { void handleOpenCommandCenter(); }}>
-            <span className="footer-command-pill-dot" />
-            {isCheckingSession ? 'Checking session…' : 'Command Center'}
-          </button>
         </div>
       </div>
     </div>
   </footer>
-
-      <CommandCenterModal
-        open={isCommandCenterOpen}
-        onClose={() => {
-          setIsCommandCenterOpen(false);
-          setSessionMessage('');
-        }}
-        sessionMessage={sessionMessage}
-      />
-    </>
   );
 };
 

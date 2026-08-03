@@ -16,8 +16,7 @@ export default function AdminLoadingState() {
         <p className="app-loading-eyebrow">EA-HTS Command Center</p>
         <h1>Validating Command Center access...</h1>
         <p>Checking your secure session and preparing the workspace.</p>
-        <div className="app-loading-progress" aria-hidden="true"><span /></div>
-        <div className="app-loading-dots" aria-hidden="true"><i /><i /><i /></div>
+        <div className="app-loading-spinner" aria-hidden="true"><span /></div>
       </motion.section>
     </main>
   );
