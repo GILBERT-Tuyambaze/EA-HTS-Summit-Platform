@@ -4,7 +4,6 @@ const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'Programme', href: '/programme' },
-  { label: 'Register', href: '/register' },
   { label: 'Demo Village', href: '/demo-village' },
   { label: 'Startup & Awards', href: '/startup-awards' },
   { label: 'Side Events', href: '/side-events' },
