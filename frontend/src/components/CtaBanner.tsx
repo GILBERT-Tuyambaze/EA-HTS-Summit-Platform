@@ -1,7 +1,13 @@
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import PartnerInquiryModal from '../components/PartnerInquiryModal';
 
-const CtaBanner = () => (
-  <section className="cta-banner">
+const CtaBanner = () => {
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+
+  return (
+    <>
+    <section className="cta-banner">
     <div className="container">
       <div className="cta-content reveal">
         <span className="cta-eyebrow">JANUARY 27–29, 2027</span>
@@ -14,13 +20,16 @@ const CtaBanner = () => (
             Register Now
             <ArrowRight className="btn-icon" />
           </a>
-          <a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry" className="btn btn-secondary cta-btn-outline">
+          <button type="button" className="btn btn-secondary cta-btn-outline" onClick={() => setIsInquiryOpen(true)}>
             Partner with us
-          </a>
+          </button>
         </div>
       </div>
     </div>
   </section>
-);
+  <PartnerInquiryModal open={isInquiryOpen} onClose={() => setIsInquiryOpen(false)} />
+  </>
+  );
+};
 
 export default CtaBanner;

@@ -1,8 +1,13 @@
 import { Globe, Mail, MapPin } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PartnerInquiryModal from './PartnerInquiryModal';
 
 const Footer = () => {
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+
   return (
+    <>
     <footer className="footer">
     <div className="footer-container">
       <div className="footer-grid">
@@ -65,8 +70,8 @@ const Footer = () => {
           <h3 className="footer-section-title">GET INVOLVED</h3>
           <div className="footer-link-list">
             <Link to="/register">Register to attend</Link>
-            <a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry">Become a partner</a>
-            <a href="mailto:ieeeahts27@gmail.com?subject=Startup%20Challenge%20Application">Enter the Startup Challenge</a>
+            <button type="button" className="footer-link-button" onClick={() => setIsInquiryOpen(true)}>Become a partner</button>
+            <button type="button" className="footer-link-button" onClick={() => setIsInquiryOpen(true)}>Enter the Startup Challenge</button>
             <a href="mailto:ieeeahts27@gmail.com?subject=Speaker%20Inquiry">Speak at the Summit</a>
           </div>
         </div>
@@ -102,6 +107,8 @@ const Footer = () => {
       </div>
     </div>
   </footer>
+  <PartnerInquiryModal open={isInquiryOpen} onClose={() => setIsInquiryOpen(false)} />
+  </>
   );
 };
 

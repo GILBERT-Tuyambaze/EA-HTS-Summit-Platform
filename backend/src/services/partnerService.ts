@@ -2,6 +2,8 @@ import { supabaseAdmin } from '../lib/supabase.js';
 import { AppError } from '../lib/errors.js';
 import { logAuditEvent } from './auditService.js';
 
+export type InquiryCategory = 'Partnership Inquiry' | 'Side Event Proposal' | 'Startup Challenge Application';
+
 export type PartnerInput = {
   company: string;
   category: string;
@@ -12,6 +14,18 @@ export type PartnerInput = {
   agreement_status?: 'draft' | 'sent' | 'signed' | 'expired';
   logo?: string | null;
   status?: 'Pending' | 'Confirmed' | 'Rejected';
+  details?: string | null;
+  source?: string | null;
+};
+
+export type PartnerInquiryInput = {
+  name: string;
+  organization: string;
+  email: string;
+  phone?: string | null;
+  details?: string | null;
+  country?: string | null;
+  category: InquiryCategory;
 };
 
 export type PartnerRecord = PartnerInput & { id: string; status: string; created_at: string; updated_at: string };
@@ -53,10 +67,40 @@ export async function createPartner(input: PartnerInput, adminId?: string) {
     logo: input.logo ?? null,
     organization: company,
     level: category,
+    details: input.details ?? null,
+    source: input.source ?? null,
   }).select().single();
   fail(error);
   if (adminId) {
     await logAuditEvent({ adminId, action: 'partners.partner_created', target: `partner:${data.id}`, metadata: { company: data.company, status: data.status } });
+  }
+  return data as PartnerRecord;
+}
+
+export async function createPartnerInquiry(input: PartnerInquiryInput, adminId?: string) {
+  const { name, organization, email, phone, details, country, category } = input;
+  if (!name || !organization || !email) {
+    throw new AppError('Name, organization, and email are required.', 400);
+  }
+
+  const { data, error } = await supabaseAdmin.from('partners').insert({
+    company: organization,
+    organization,
+    category,
+    level: category,
+    contact_person: name,
+    email,
+    phone: phone ?? null,
+    country: country ?? null,
+    status: 'Pending',
+    agreement_status: 'draft',
+    details: details ?? null,
+    source: 'website',
+    logo: null,
+  }).select().single();
+  fail(error);
+  if (adminId) {
+    await logAuditEvent({ adminId, action: 'partners.partner_inquiry_created', target: `partner:${data.id}`, metadata: { company: data.company, status: data.status, category } });
   }
   return data as PartnerRecord;
 }

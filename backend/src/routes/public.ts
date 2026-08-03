@@ -8,6 +8,7 @@ import { createRegistration, findRegistrationByEmailOrPhone } from '../services/
 import { sendBrevoEmail } from '../services/brevoService.js';
 import { acceptInvitation, getInvitationByToken } from '../services/accessService.js';
 import { getAdminByEmail } from '../services/adminService.js';
+import { createPartnerInquiry } from '../services/partnerService.js';
 
 const router = Router();
 
@@ -32,6 +33,15 @@ const adminLoginSchema = z.object({
 });
 const passwordResetSchema = z.object({ email: z.string().email() });
 const invitationActivationSchema = z.object({ password: z.string().min(8) });
+const partnerInquirySchema = z.object({
+  name: z.string().trim().min(2),
+  organization: z.string().trim().min(2),
+  email: z.string().email(),
+  phone: z.string().trim().nullable().optional(),
+  details: z.string().trim().max(2000).nullable().optional(),
+});
+
+const inquiryTypeSchema = z.enum(['partnership', 'side-event', 'challenge']);
 
 router.get('/admin/invitations/:token', async (req, res, next) => {
   try { const invitation = await getInvitationByToken(String(req.params.token)); res.json({ email: invitation.email, role: invitation.admin_roles?.name, expiresAt: invitation.expires_at }); } catch (error) { next(error); }
@@ -63,6 +73,57 @@ router.post('/register', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+const createInquirySubmission = async (req: any, res: any, next: any, inquiryType: 'partnership' | 'side-event' | 'challenge') => {
+  try {
+    const parsed = partnerInquirySchema.parse(req.body);
+    const categoryMap = {
+      partnership: 'Partnership Inquiry',
+      'side-event': 'Side Event Proposal',
+      challenge: 'Startup Challenge Application',
+    } as const;
+
+    const inquiry = await createPartnerInquiry({
+      name: parsed.name,
+      organization: parsed.organization,
+      email: parsed.email,
+      phone: parsed.phone ?? null,
+      details: parsed.details ?? null,
+      category: categoryMap[inquiryType],
+    });
+
+    const labelMap = {
+      partnership: 'partnership request',
+      'side-event': 'side event proposal',
+      challenge: 'startup challenge application',
+    } as const;
+
+    await sendBrevoEmail({
+      to: parsed.email,
+      name: parsed.name,
+      subject: 'We received your submission',
+      template: 'manual',
+      payload: { name: parsed.name },
+      message: `Thank you, ${parsed.name}. We have received your ${labelMap[inquiryType]} for ${parsed.organization}. Our team will review it and follow up shortly with the next steps.`,
+    });
+
+    res.status(201).json({ ok: true, inquiry });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.post('/partner-inquiries', async (req, res, next) => {
+  await createInquirySubmission(req, res, next, 'partnership');
+});
+
+router.post('/side-event-proposals', async (req, res, next) => {
+  await createInquirySubmission(req, res, next, 'side-event');
+});
+
+router.post('/challenge-applications', async (req, res, next) => {
+  await createInquirySubmission(req, res, next, 'challenge');
 });
 
 router.post('/admin/login', async (req, res, next) => {
