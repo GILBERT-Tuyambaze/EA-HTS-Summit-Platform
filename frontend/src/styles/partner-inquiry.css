@@ -1,0 +1,192 @@
+:root {
+  --ieee-blue: #006699;
+  --ieee-blue-dark: #003366;
+  --ieee-red: #B31B1B;
+  --ieee-gold: #D8A400;
+  --ieee-white: #FFFFFF;
+  --ieee-text: #15314d;
+  --ieee-muted: #5b708c;
+}
+
+.partner-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(2, 14, 32, 0.8), rgba(10, 44, 74, 0.62));
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5.5rem 1.25rem 1.5rem;
+  z-index: 1400;
+}
+
+.partner-modal-card {
+  position: relative;
+  width: min(100%, calc(100vw - 2rem));
+  max-width: 960px;
+  height: auto;
+  max-height: calc(100vh - 6.5rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(234, 244, 255, 0.7));
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 0;
+  box-shadow: 0 30px 90px rgba(3, 18, 31, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+.partner-modal-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.glow-one {
+  top: -2rem;
+  left: -1rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(0, 102, 153, 0.22);
+}
+
+.glow-two {
+  bottom: -1.5rem;
+  right: -1rem;
+  width: 10rem;
+  height: 10rem;
+  background: rgba(216, 164, 0, 0.2);
+}
+
+.partner-modal-header {
+  position: relative;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.35rem 1.4rem 1rem;
+  border-bottom: 1px solid rgba(120, 147, 179, 0.23);
+}
+
+.partner-modal-heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.partner-modal-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.35rem 0.7rem;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.66);
+  color: var(--ieee-blue);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), inset -2px -2px 5px rgba(10, 28, 46, 0.08);
+}
+
+.partner-modal-header h3 {
+  margin: 0;
+  color: var(--ieee-blue-dark);
+  font-size: 1.3rem;
+}
+
+.partner-modal-heading p {
+  margin: 0;
+  color: var(--ieee-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.partner-modal-close {
+  border: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ieee-blue-dark);
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 6px 6px 14px rgba(11, 37, 58, 0.12), -4px -4px 10px rgba(255, 255, 255, 0.75);
+}
+
+.partner-modal-form {
+  display: grid;
+  gap: 0.95rem;
+  padding: 1.15rem 1.4rem 1.4rem;
+}
+
+.partner-field {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.95rem 1rem;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: inset 5px 5px 10px rgba(255, 255, 255, 0.7), inset -5px -5px 10px rgba(15, 31, 51, 0.05);
+}
+
+.partner-field span {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ieee-blue-dark);
+}
+
+.partner-field input,
+.partner-field textarea {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ieee-text);
+  padding: 0.15rem 0;
+  font: inherit;
+  outline: none;
+}
+
+.partner-field input::placeholder,
+.partner-field textarea::placeholder {
+  color: #7c8da7;
+}
+
+.partner-field-textarea textarea {
+  min-height: 125px;
+  resize: vertical;
+  padding-top: 0.2rem;
+}
+
+.partner-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.partner-modal-actions .btn {
+  border-radius: 999px;
+  box-shadow: 8px 8px 16px rgba(13, 35, 54, 0.1), -6px -6px 14px rgba(255, 255, 255, 0.7);
+}
+
+.partner-modal-card::-webkit-scrollbar {
+  width: 10px;
+}
+
+.partner-modal-card::-webkit-scrollbar-track {
+  background: rgba(10, 28, 46, 0.06);
+  border-radius: 999px;
+}
+
+.partner-modal-card::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0, 102, 153, 0.7), rgba(179, 27, 27, 0.55));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.partner-modal-card::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(0, 102, 153, 0.9), rgba(179, 27, 27, 0.75));
+}

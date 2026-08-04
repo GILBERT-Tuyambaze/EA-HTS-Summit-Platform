@@ -1,0 +1,110 @@
+:root {
+  --ieee-blue: #006699;
+  --ieee-blue-dark: #003366;
+  --ieee-red: #B31B1B;
+  --ieee-gold: #D8A400;
+  --ieee-white: #FFFFFF;
+  --ieee-text: #15314d;
+  --ieee-muted: #5b708c;
+}
+
+.policy-page-shell {
+  min-height: 100vh;
+  padding: 3rem 1.25rem 4rem;
+  background: linear-gradient(180deg, #eef4fb 0%, #f9fbff 100%);
+  color: var(--ieee-text);
+}
+
+.policy-page-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--ieee-white);
+  border: 1px solid #dfeaf4;
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 40px rgba(11, 34, 56, 0.08);
+  overflow: hidden;
+}
+
+.policy-page-header {
+  background: linear-gradient(135deg, var(--ieee-blue) 0%, var(--ieee-blue-dark) 100%);
+  color: var(--ieee-white);
+  padding: 2rem;
+}
+
+.policy-page-header .eyebrow {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #cfe9ff;
+}
+
+.policy-page-header h1 {
+  margin: 0 0 0.45rem;
+  color: var(--ieee-white);
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+}
+
+.policy-page-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.7;
+}
+
+.policy-page-content {
+  padding: 2rem;
+}
+
+.policy-page-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0 0;
+  margin-top: 1.2rem;
+  border-top: 1px solid #e7eef7;
+  color: var(--ieee-muted);
+  font-size: 0.9rem;
+}
+
+.policy-page-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ieee-gold);
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 1.2rem;
+}
+
+.policy-page-back:hover {
+  color: var(--ieee-red);
+}
+
+.policy-page-section {
+  margin-bottom: 1rem;
+  padding: 0.8rem 0 0;
+  border-top: 1px solid #e7eef7;
+}
+
+.policy-page-section:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.policy-page-section h2 {
+  color: var(--ieee-blue-dark);
+  margin: 0 0 0.4rem;
+  font-size: 0.98rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.policy-page-section p {
+  line-height: 1.7;
+  color: var(--ieee-text);
+  margin: 0;
+  font-size: 0.96rem;
+}

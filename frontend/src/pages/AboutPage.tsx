@@ -1,5 +1,7 @@
 import { ArrowRight, Bot, Building2, CalendarDays, CloudSun, Cross, Database, Drone, Globe2, GraduationCap, Handshake, HeartPulse, Map, Mic2, Network, Radio, Rocket, Scale, ShieldAlert, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import PartnerInquiryModal from '../components/PartnerInquiryModal';
 import { GlassCard, SectionTitle, fadeUp } from '../components/PagePrimitives';
 import '../styles/pages.css';
 
@@ -57,6 +59,8 @@ function AboutHero() {
 }
 
 export default function AboutPage() {
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+
   return <main>
     <AboutHero />
 
@@ -84,6 +88,7 @@ export default function AboutPage() {
 
     <section className="page-section"><div className="container"><SectionTitle eyebrow="ORGANIZERS" title="Built with the IEEE community." /><div className="organizer-grid">{['IEEE', 'IEEE Rwanda Section', 'IEEE Humanitarian Technologies Board', 'Summit Organizing Committee'].map(name => <div key={name} className="organizer-logo"><Cross /> <span>{name}</span></div>)}</div></div></section>
 
-    <section className="page-cta"><div className="container"><h2>Ready to join EA-HTS 2027?</h2><p>Be part of the conversations and collaborations shaping a more resilient East Africa.</p><div><a className="btn btn-gold" href="/register">Register now <ArrowRight className="btn-icon" /></a><a className="btn btn-secondary" href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry">Partner with us</a></div></div></section>
+    <section className="page-cta"><div className="container"><h2>Ready to join EA-HTS 2027?</h2><p>Be part of the conversations and collaborations shaping a more resilient East Africa.</p><div><a className="btn btn-gold" href="/register">Register now <ArrowRight className="btn-icon" /></a><button type="button" className="btn btn-secondary" onClick={() => setIsInquiryOpen(true)}>Partner with us</button></div></div></section>
+    <PartnerInquiryModal open={isInquiryOpen} onClose={() => setIsInquiryOpen(false)} />
   </main>;
 }

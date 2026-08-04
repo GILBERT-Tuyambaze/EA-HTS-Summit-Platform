@@ -14,8 +14,8 @@ type FormState = {
   phone: string;
   country: string;
   organization: string;
-  ieeeMember: 'Yes' | 'No';
-  participantType: ParticipantType;
+  ieeeMember: 'Yes' | 'No' | '';
+  participantType: ParticipantType | '';
   privacyAccepted: boolean;
 };
 
@@ -25,13 +25,14 @@ const initialForm: FormState = {
   phone: '',
   country: '',
   organization: '',
-  ieeeMember: 'No',
-  participantType: 'Local',
+  ieeeMember: '',
+  participantType: '',
   privacyAccepted: false,
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[+()\d\s-]{7,20}$/;
+
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function RegisterPage() {
   const { showPopup } = usePopup();
   const { openProgress, updateProgress, closeProgress } = useProgress();
 
-  const paymentInfo = useMemo(() => paymentConfig[form.participantType], [form.participantType]);
+  const paymentInfo = useMemo(() => paymentConfig[form.participantType as ParticipantType] ?? paymentConfig.Local, [form.participantType]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -83,8 +84,24 @@ export default function RegisterPage() {
       delete nextErrors.country;
     }
 
+    if (field === 'ieeeMember') {
+      if (!String(value).trim()) {
+        nextErrors.ieeeMember = 'Please select whether you are an IEEE member.';
+      } else {
+        delete nextErrors.ieeeMember;
+      }
+    }
+
+    if (field === 'participantType') {
+      if (!String(value).trim()) {
+        nextErrors.participantType = 'Please select a participant type.';
+      } else {
+        delete nextErrors.participantType;
+      }
+    }
+
     if (field === 'privacyAccepted' && !value) {
-      nextErrors.privacyAccepted = 'You must agree to the IEEE Privacy Policy.';
+      nextErrors.privacyAccepted = 'You must agree to the IEEE Privacy Policy and Terms of Use.';
     } else if (field === 'privacyAccepted') {
       delete nextErrors.privacyAccepted;
     }
@@ -101,7 +118,7 @@ export default function RegisterPage() {
       [name]: safeValue,
     }));
 
-    if (type === 'checkbox' || name === 'fullName' || name === 'email' || name === 'phone' || name === 'country' || name === 'privacyAccepted') {
+    if (type === 'checkbox' || name === 'fullName' || name === 'email' || name === 'phone' || name === 'country' || name === 'ieeeMember' || name === 'participantType' || name === 'privacyAccepted') {
       validateField(name as keyof FormState, safeValue);
     }
   };
@@ -119,7 +136,9 @@ export default function RegisterPage() {
     if (!form.phone.trim()) nextErrors.phone = 'Phone number is required.';
     else if (!phonePattern.test(form.phone.trim())) nextErrors.phone = 'Please enter a valid phone number.';
     if (!form.country.trim()) nextErrors.country = 'Country is required.';
-    if (!form.privacyAccepted) nextErrors.privacyAccepted = 'You must agree to the IEEE Privacy Policy.';
+    if (!form.ieeeMember) nextErrors.ieeeMember = 'Please select whether you are an IEEE member.';
+    if (!form.participantType) nextErrors.participantType = 'Please select a participant type.';
+    if (!form.privacyAccepted) nextErrors.privacyAccepted = 'You must agree to the IEEE Privacy Policy and Terms of Use.';
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -153,6 +172,7 @@ export default function RegisterPage() {
           { label: 'Sending confirmation', status: 'pending' },
         ],
       });
+      const participantType = form.participantType as ParticipantType;
       const createdRegistration = await createRegistration({
         fullName: form.fullName.trim(),
         email: form.email.trim(),
@@ -160,7 +180,7 @@ export default function RegisterPage() {
         country: form.country.trim(),
         organization: form.organization.trim(),
         ieeeMember: form.ieeeMember === 'Yes',
-        participantType: form.participantType,
+        participantType,
         paymentStatus: 'Pending',
         paymentMethod: '',
         paymentReference: '',
@@ -265,18 +285,22 @@ export default function RegisterPage() {
                 <label className="field">
                   <span>IEEE Member?</span>
                   <select name="ieeeMember" value={form.ieeeMember} onChange={handleChange}>
+                    <option value="">Select an option</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
+                  {errors.ieeeMember && <small>{errors.ieeeMember}</small>}
                 </label>
 
                 <label className="field">
                   <span>Participant Type</span>
                   <select name="participantType" value={form.participantType} onChange={handleChange}>
+                    <option value="">Select participant type</option>
                     {participantOptions.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
+                  {errors.participantType && <small>{errors.participantType}</small>}
                 </label>
               </div>
 
@@ -306,7 +330,15 @@ export default function RegisterPage() {
 
               <label className="checkbox-row">
                 <input type="checkbox" name="privacyAccepted" checked={form.privacyAccepted} onChange={handleChange} />
-                <span>I agree to the IEEE Privacy Policy</span>
+                <span>
+                  <button
+                    type="button"
+                    className="reg-privacy-link"
+                    onClick={() => navigate('/privacy-policy')}
+                  >
+                    I agree to the IEEE Privacy Policy and IEEE Terms of Use
+                  </button>
+                </span>
               </label>
               {errors.privacyAccepted && <small className="checkbox-error">{errors.privacyAccepted}</small>}
 

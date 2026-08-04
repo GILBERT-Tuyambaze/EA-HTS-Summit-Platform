@@ -324,7 +324,7 @@ export default function AdminEmailCenterPage({ onReturn }: { onReturn: () => voi
   return (
     <div className="command-shell">
       <aside className="command-sidebar">
-        <button className="command-brand" onClick={() => navigate('/admin')}><span>IEEE</span><strong>EA-HTS</strong></button>
+        <button className="command-brand" onClick={() => window.location.assign('/')}><span>IEEE</span><strong>EA-HTS</strong></button>
         <p className="command-event">SUMMIT 2027</p>
         <nav className="command-nav" aria-label="Admin navigation">
           <button className="command-nav-item" onClick={() => navigate('/admin')}><LayoutDashboard size={18} /> Dashboard</button>

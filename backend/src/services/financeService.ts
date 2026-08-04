@@ -49,7 +49,7 @@ const ensureId = (id: string) => {
 export async function listPayments() {
   const { data, error } = await supabaseAdmin
     .from('payments')
-    .select('*, registrations(full_name,country,participant_type)')
+    .select('*, registrations!registration_id(full_name,country,participant_type)')
     .order('created_at', { ascending: false });
   fail(error);
   return (data ?? []) as any[];
@@ -59,7 +59,7 @@ export async function getPayment(id: string) {
   ensureId(id);
   const { data, error } = await supabaseAdmin
     .from('payments')
-    .select('*, registrations(full_name,country)')
+    .select('*, registrations!registration_id(full_name,country,participant_type)')
     .eq('id', id)
     .maybeSingle();
   fail(error);

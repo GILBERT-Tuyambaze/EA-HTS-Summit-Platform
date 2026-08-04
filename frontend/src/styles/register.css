@@ -225,6 +225,25 @@
   margin-top: 0.2rem;
 }
 
+.checkbox-row .reg-privacy-link {
+  color: #d8a400 !important;
+  text-decoration: none !important;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+}
+
+.checkbox-row .reg-privacy-link:hover,
+.checkbox-row .reg-privacy-link:focus-visible {
+  color: #b31b1b !important;
+  text-decoration: none !important;
+}
+
 .submit-message {
   display: flex;
   align-items: center;

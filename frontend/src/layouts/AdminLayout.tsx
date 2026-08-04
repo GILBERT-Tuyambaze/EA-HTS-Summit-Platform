@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminLoadingState from '../components/AdminLoadingState';
 import CommandCenterModal from '../components/CommandCenterModal';
+import Footer from '../components/Footer';
 import { getAdminSession, verifyAdminSession } from '../services/registrationService';
 
 export default function AdminLayout() {
@@ -71,5 +72,10 @@ export default function AdminLayout() {
     );
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <Footer />
+    </>
+  );
 }

@@ -17,6 +17,7 @@ import './styles/countdown.css';
 import './styles/track-card.css';
 import './styles/demo-card.css';
 import './styles/partner-section.css';
+import './styles/partner-inquiry.css';
 import './styles/popup-message.css';
 import './styles/progress-modal.css';
 import './styles/register.css';

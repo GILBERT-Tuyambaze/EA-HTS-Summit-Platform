@@ -182,6 +182,8 @@ create table if not exists public.partners (
   email text not null,
   phone text,
   country text,
+  details text,
+  source text,
   status text not null default 'Pending',
   agreement_status public.partner_agreement_status not null default 'draft',
   logo text,

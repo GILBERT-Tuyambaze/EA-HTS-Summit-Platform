@@ -9,6 +9,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ProgrammePage from '../pages/ProgrammePage';
 import RegisterPage from '../pages/RegisterPage';
 import RegisterSuccessPage from '../pages/RegisterSuccessPage';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
+import TermsOfUsePage from '../pages/TermsOfUsePage';
 import DemoVillagePage from '../pages/DemoVillagePage';
 import StartupAwardsPage from '../pages/StartupAwardsPage';
 import SideEventsPage from '../pages/SideEventsPage';
@@ -23,6 +25,8 @@ export default function AppRoutes() {
         <Route path="programme" element={<ProgrammePage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="register/success" element={<RegisterSuccessPage />} />
+        <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="terms-of-use" element={<TermsOfUsePage />} />
         <Route path="demo-village" element={<DemoVillagePage />} />
         <Route path="startup-awards" element={<StartupAwardsPage />} />
         <Route path="side-events" element={<SideEventsPage />} />

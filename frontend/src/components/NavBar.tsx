@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getAdminSession } from '../services/registrationService';
 import { NavItem } from '../types';
 
 interface NavBarProps {
@@ -27,6 +28,8 @@ const NavBar = ({ items }: NavBarProps) => {
   const { pathname } = useLocation();
   const currentPath = pathname.replace(/\/+$/, '') || '/';
   const closeMenu = () => setIsMenuOpen(false);
+  const adminSession = getAdminSession();
+  const visibleItems = adminSession ? [...items, { label: 'Admin Dashboard', href: '/admin' }] : items;
 
   return (
     <nav className={`nav${isScrolled ? ' scrolled' : ''}`} id="navbar">
@@ -46,7 +49,7 @@ const NavBar = ({ items }: NavBarProps) => {
         </Link>
 
         <ul className={`nav-links${isMenuOpen ? ' open' : ''}`} id="nav-links">
-          {items.map((item) => {
+          {visibleItems.map((item) => {
             const isActive = (item.href.replace(/\/+$/, '') || '/') === currentPath;
             if (!item.href.startsWith('/')) {
               return <li key={item.href}><a href={item.href} className={isActive ? 'active' : ''} onClick={closeMenu}>{item.label}</a></li>;

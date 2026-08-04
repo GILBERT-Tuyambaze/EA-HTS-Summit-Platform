@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ShieldCheck, ShieldAlert, UserCheck, Users, Sparkles, RefreshCw, Trash2 } from 'lucide-react';
+import { ArrowLeft, Globe2, RefreshCw, ShieldAlert, ShieldCheck, Sparkles, Trash2, UserCheck, Users } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { usePopup } from '../contexts/PopupContext';
 import { useProgress } from '../contexts/ProgressContext';
@@ -239,6 +239,10 @@ export default function SettingsPage() {
           <p className="eyebrow admin-eyebrow">ACCESS CONTROL</p>
           <h1>Settings &amp; Access Management</h1>
           <p>Enterprise-grade administration for roles, invitations, and system security.</p>
+        </div>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
+          <button className="command-nav-item muted" onClick={() => window.location.assign('/')}><Globe2 size={16} /> Return to public site</button>
+          <button className="command-nav-item muted" onClick={() => window.location.assign('/admin')}><ArrowLeft size={16} /> Return to dashboard</button>
         </div>
       </div>
 
