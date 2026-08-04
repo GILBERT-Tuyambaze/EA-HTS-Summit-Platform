@@ -64,7 +64,9 @@ export default function SettingsPage() {
       const data = await getAccess();
       setAccess(data);
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'Unable to load access data.');
+      const message = caughtError instanceof Error ? caughtError.message : 'Unable to load access data.';
+      setError(message);
+      showPopup({ title: 'Load failed', type: 'error', message });
     } finally {
       setLoading(false);
     }
@@ -86,7 +88,7 @@ export default function SettingsPage() {
 
   const handleInvite = async () => {
     if (!email.trim() || !roleId) {
-      showPopup({ type: 'error', message: 'Please enter an email and select a role.' });
+      showPopup({ title: 'Invalid invitation', type: 'error', message: 'Please enter an email and select a role.' });
       return;
     }
 
@@ -120,14 +122,14 @@ export default function SettingsPage() {
       });
 
       await navigator.clipboard.writeText(`${window.location.origin}${result.activationPath}`);
-      showPopup({ type: 'success', message: 'Invitation created and activation link copied to clipboard.' });
+      showPopup({ title: 'Invitation created', type: 'success', message: 'Invitation created and activation link copied to clipboard.' });
       setInviteOpen(false);
       setEmail('');
       setRoleId('');
       setExpiry(24);
       void loadAccess();
     } catch (caughtError) {
-      showPopup({ type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to create invitation.' });
+      showPopup({ title: 'Invitation failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to create invitation.' });
     } finally {
       closeProgress();
     }
@@ -167,10 +169,10 @@ export default function SettingsPage() {
 
     try {
       await updateAdminRole(userId, newRoleId);
-      showPopup({ type: 'success', message: 'Administrator role updated.' });
+      showPopup({ title: 'Role updated', type: 'success', message: 'Administrator role updated.' });
       void loadAccess();
     } catch (caughtError) {
-      showPopup({ type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to update role.' });
+      showPopup({ title: 'Update failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to update role.' });
     } finally {
       closeProgress();
     }
@@ -186,10 +188,10 @@ export default function SettingsPage() {
 
     try {
       await disableAdmin(userId, disable);
-      showPopup({ type: 'success', message: disable ? 'Administrator disabled.' : 'Administrator reactivated.' });
+      showPopup({ title: 'Admin status updated', type: 'success', message: disable ? 'Administrator disabled.' : 'Administrator reactivated.' });
       void loadAccess();
     } catch (caughtError) {
-      showPopup({ type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to update admin status.' });
+      showPopup({ title: 'Access update failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to update admin status.' });
     } finally {
       closeProgress();
     }
@@ -208,21 +210,21 @@ export default function SettingsPage() {
     try {
       if (confirmation.type === 'remove-admin') {
         await removeAdmin(confirmation.id);
-        showPopup({ type: 'success', message: 'Administrator removed from access control.' });
+        showPopup({ title: 'Administrator removed', type: 'success', message: 'Administrator removed from access control.' });
       }
       if (confirmation.type === 'cancel-invite') {
         await cancelInvitation(confirmation.id);
-        showPopup({ type: 'success', message: 'Invitation cancelled successfully.' });
+        showPopup({ title: 'Invitation cancelled', type: 'success', message: 'Invitation cancelled successfully.' });
       }
       if (confirmation.type === 'resend-invite') {
         const result = await resendInvitation(confirmation.id);
         await navigator.clipboard.writeText(`${window.location.origin}${result.activationPath}`);
-        showPopup({ type: 'success', message: 'Invitation resent and activation link copied.' });
+        showPopup({ title: 'Invitation resent', type: 'success', message: 'Invitation resent and activation link copied.' });
       }
       setConfirmation(null);
       void loadAccess();
     } catch (caughtError) {
-      showPopup({ type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to complete action.' });
+      showPopup({ title: 'Action failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to complete action.' });
     } finally {
       closeProgress();
     }

@@ -9,7 +9,7 @@ type PopupMessageProps = {
 
 export default function PopupMessage({ title, message, type = 'info', onClose }: PopupMessageProps) {
   return (
-    <div className="popup-message-overlay" role="alertdialog" aria-live="assertive" aria-modal="true">
+    <div className="popup-message-overlay" role="status" aria-live="assertive">
       <div className={`popup-message-card popup-${type}`}>
         <div className="popup-message-header">
           <div>

@@ -9,6 +9,7 @@ import {
   resendInvitation,
   updateAdmin,
 } from '../services/accessService.js';
+import env from '../lib/env.js';
 import { logAuditEvent } from '../services/auditService.js';
 import { sendBrevoEmail } from '../services/brevoService.js';
 
@@ -39,6 +40,7 @@ router.post('/invitations', async (q: AuthenticatedRequest, r, n) => {
     const body = invitationSchema.parse(q.body);
     const result = await createInvitation(body.email, body.roleId, q.admin!.email, body.expiresHours);
     const activationPath = `/admin/invite/${result.token}`;
+    const activationUrl = `${env.FRONTEND_URL}${activationPath}`;
 
     await sendBrevoEmail({
       to: body.email,
@@ -49,7 +51,7 @@ router.post('/invitations', async (q: AuthenticatedRequest, r, n) => {
       message: `You have been invited to the EA-HTS Summit Command Center as ${result.invitation.admin_roles?.name ?? 'Administrator'}.
 
 Activate your account by visiting:
-${q.protocol}://${q.get('host')}${activationPath}
+${activationUrl}
 
 This link expires at ${result.invitation.expires_at}.`,
     });
@@ -71,6 +73,7 @@ router.post('/invitations/:id/resend', async (q: AuthenticatedRequest, r, n) => 
   try {
     const result = await resendInvitation(String(q.params.id));
     const activationPath = `/admin/invite/${result.token}`;
+    const activationUrl = `${env.FRONTEND_URL}${activationPath}`;
 
     await sendBrevoEmail({
       to: result.invitation.email,
@@ -81,7 +84,7 @@ router.post('/invitations/:id/resend', async (q: AuthenticatedRequest, r, n) => 
       message: `This invitation link has been refreshed for the EA-HTS Summit Command Center.
 
 Activate your account by visiting:
-${q.protocol}://${q.get('host')}${activationPath}
+${activationUrl}
 
 This link expires at ${result.invitation.expires_at}.`,
     });
