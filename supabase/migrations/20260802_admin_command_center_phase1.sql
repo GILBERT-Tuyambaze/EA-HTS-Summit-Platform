@@ -103,6 +103,8 @@ alter table public.partners
   add column if not exists email text,
   add column if not exists phone text,
   add column if not exists country text,
+  add column if not exists details text,
+  add column if not exists source text,
   add column if not exists status text not null default 'Pending',
   add column if not exists agreement_status public.partner_agreement_status not null default 'draft',
   add column if not exists created_at timestamptz not null default now();

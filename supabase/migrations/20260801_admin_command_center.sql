@@ -53,6 +53,8 @@ alter table public.speakers add column if not exists image text;
 alter table public.partners add column if not exists company text;
 alter table public.partners add column if not exists category text;
 alter table public.partners add column if not exists country text;
+alter table public.partners add column if not exists details text;
+alter table public.partners add column if not exists source text;
 alter table public.partners add column if not exists agreement_status text not null default 'not_started';
 
 create index if not exists payments_status_idx on public.payments(status);

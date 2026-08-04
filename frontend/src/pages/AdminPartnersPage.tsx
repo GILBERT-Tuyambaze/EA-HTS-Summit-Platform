@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import AuditTimeline from '../components/AuditTimeline';
 import ConfirmModal from '../components/ConfirmModal';
 import AdminWorkspaceLayout from '../layouts/AdminWorkspaceLayout';
 import { usePopup } from '../contexts/PopupContext';
 import { useProgress } from '../contexts/ProgressContext';
+import '../styles/admin-drawer.css';
 import {
   createPartner,
   deletePartner,
@@ -47,6 +47,9 @@ export default function AdminPartnersPage() {
   const [confirm, setConfirm] = useState<{ kind: 'save' | 'status' | 'delete'; partner?: PartnerRecord; status?: PartnerStatus } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<InquiryFilter>('all');
+  const [selectedPartner, setSelectedPartner] = useState<PartnerRecord | null>(null);
+  const [partnerAction, setPartnerAction] = useState<'view' | 'update' | 'approve' | 'reject'>('view');
+  const [drawerForm, setDrawerForm] = useState<PartnerInput>(blank);
   const { showPopup } = usePopup();
   const { openProgress, closeProgress } = useProgress();
 
@@ -81,6 +84,20 @@ export default function AdminPartnersPage() {
     setEditing(partner);
     setForm({ ...partner });
     setFormOpen(true);
+  };
+
+  const openPartnerDetails = (partner: PartnerRecord) => {
+    setSelectedPartner(partner);
+    setPartnerAction('view');
+    setDrawerForm({ ...partner });
+  };
+
+  const closePartnerDetails = () => {
+    setSelectedPartner(null);
+  };
+
+  const updateDrawerField = (key: keyof PartnerInput, value: string) => {
+    setDrawerForm((current) => ({ ...current, [key]: value }));
   };
 
   const submit = () => {
@@ -186,13 +203,14 @@ export default function AdminPartnersPage() {
                   <th>Country</th>
                   <th>Status</th>
                   <th>Agreement</th>
+                  <th>Message</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {visiblePartners.length ? (
                   visiblePartners.map((partner) => (
-                    <tr key={partner.id}>
+                    <tr key={partner.id} onClick={() => openPartnerDetails(partner)} style={{ cursor: 'pointer' }}>
                       <td>{partner.company}</td>
                       <td>{partner.category}</td>
                       <td>
@@ -203,21 +221,22 @@ export default function AdminPartnersPage() {
                       <td>{partner.country || '—'}</td>
                       <td>{partner.status}</td>
                       <td>{partner.agreementStatus}</td>
+                      <td>{partner.details ? `${partner.details.slice(0, 80)}${partner.details.length > 80 ? '…' : ''}` : '—'}</td>
                       <td>
-                        <button className="text-button" onClick={() => openEdit(partner)}>Edit</button>
+                        <button className="text-button" onClick={(event) => { event.stopPropagation(); openEdit(partner); }}>Edit</button>
                         {partner.status === 'Pending' && (
                           <>
-                            <button className="text-button" onClick={() => setConfirm({ kind: 'status', partner, status: 'Confirmed' })}>Approve</button>
-                            <button className="text-button" onClick={() => setConfirm({ kind: 'status', partner, status: 'Rejected' })}>Reject</button>
+                            <button className="text-button" onClick={(event) => { event.stopPropagation(); setConfirm({ kind: 'status', partner, status: 'Confirmed' }); }}>Approve</button>
+                            <button className="text-button" onClick={(event) => { event.stopPropagation(); setConfirm({ kind: 'status', partner, status: 'Rejected' }); }}>Reject</button>
                           </>
                         )}
-                        <button className="text-button danger" onClick={() => setConfirm({ kind: 'delete', partner })}>Delete</button>
+                        <button className="text-button danger" onClick={(event) => { event.stopPropagation(); setConfirm({ kind: 'delete', partner }); }}>Delete</button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7}>No records match this category.</td>
+                    <td colSpan={8}>No records match this category.</td>
                   </tr>
                 )}
               </tbody>
@@ -226,22 +245,44 @@ export default function AdminPartnersPage() {
         )}
       </section>
 
-      <AuditTimeline />
+      <ConfirmModal className="partner-form-modal" open={formOpen} title={editing ? 'Edit partner' : 'Add partner'} description="Enter the partner details before saving this record." confirmLabel="Review changes" onCancel={() => setFormOpen(false)} onConfirm={submit}>
+        <div className="partner-form-shell">
+          <label className="partner-form-field partner-form-field-full">
+            <span>Company Name *</span>
+            <input value={form.company} onChange={(event) => change('company', event.target.value)} placeholder="Enter company name" />
+          </label>
 
-      <ConfirmModal open={formOpen} title={editing ? 'Edit partner' : 'Add partner'} description="Enter the partner details before saving this record." confirmLabel="Review changes" onCancel={() => setFormOpen(false)} onConfirm={submit}>
-        <div className="admin-form-grid">
-          <input value={form.company} onChange={(event) => change('company', event.target.value)} placeholder="Company *" />
-          <input value={form.category} onChange={(event) => change('category', event.target.value)} placeholder="Category *" />
-          <input value={form.contactPerson} onChange={(event) => change('contactPerson', event.target.value)} placeholder="Contact person *" />
-          <input type="email" value={form.email} onChange={(event) => change('email', event.target.value)} placeholder="Email *" />
-          <input value={form.phone} onChange={(event) => change('phone', event.target.value)} placeholder="Phone" />
-          <input value={form.country} onChange={(event) => change('country', event.target.value)} placeholder="Country" />
-          <select value={form.agreementStatus} onChange={(event) => change('agreementStatus', event.target.value)}>
-            <option value="draft">Agreement: draft</option>
-            <option value="sent">Agreement: sent</option>
-            <option value="signed">Agreement: signed</option>
-            <option value="expired">Agreement: expired</option>
-          </select>
+          <div className="partner-form-grid">
+            <label className="partner-form-field">
+              <span>Category *</span>
+              <input value={form.category} onChange={(event) => change('category', event.target.value)} placeholder="Select category ▼" />
+            </label>
+            <label className="partner-form-field">
+              <span>Contact Person</span>
+              <input value={form.contactPerson} onChange={(event) => change('contactPerson', event.target.value)} placeholder="Enter contact person's name" />
+            </label>
+            <label className="partner-form-field">
+              <span>Email Address *</span>
+              <input type="email" value={form.email} onChange={(event) => change('email', event.target.value)} placeholder="example@email.com" />
+            </label>
+            <label className="partner-form-field">
+              <span>Phone Number</span>
+              <input value={form.phone} onChange={(event) => change('phone', event.target.value)} placeholder="+94 77 123 4567" />
+            </label>
+            <label className="partner-form-field">
+              <span>Country</span>
+              <input value={form.country} onChange={(event) => change('country', event.target.value)} placeholder="Select country ▼" />
+            </label>
+            <label className="partner-form-field">
+              <span>Agreement Type</span>
+              <select value={form.agreementStatus} onChange={(event) => change('agreementStatus', event.target.value)}>
+                <option value="draft">Draft</option>
+                <option value="sent">Sent</option>
+                <option value="signed">Signed</option>
+                <option value="expired">Expired</option>
+              </select>
+            </label>
+          </div>
         </div>
       </ConfirmModal>
 
@@ -260,6 +301,140 @@ export default function AdminPartnersPage() {
         onCancel={() => setConfirm(null)}
         onConfirm={() => void execute()}
       />
+
+      {selectedPartner && (
+        <>
+          <div className="drawer-overlay" onClick={closePartnerDetails} />
+          <aside className="detail-drawer open" role="dialog" aria-label="Partner details">
+            <button className="drawer-close" onClick={closePartnerDetails} aria-label="Close details">✕</button>
+            <div className="detail-header">
+              <div>
+                <p className="eyebrow admin-eyebrow">Partner snapshot</p>
+                <h2>{selectedPartner.company}</h2>
+                <p style={{ marginTop: 8, color: '#6b778c' }}>{selectedPartner.category} · {selectedPartner.status}</p>
+              </div>
+            </div>
+
+            <div className="detail-grid">
+              <div className="detail-card">
+                <h3>Contact information</h3>
+                <ul>
+                  <li><strong>Contact person:</strong> {selectedPartner.contactPerson}</li>
+                  <li><strong>Email:</strong> {selectedPartner.email}</li>
+                  <li><strong>Phone:</strong> {selectedPartner.phone || '—'}</li>
+                  <li><strong>Country:</strong> {selectedPartner.country || '—'}</li>
+                </ul>
+              </div>
+
+              <div className="detail-card">
+                <h3>Agreement details</h3>
+                <ul>
+                  <li><strong>Status:</strong> {selectedPartner.status}</li>
+                  <li><strong>Agreement type:</strong> {selectedPartner.agreementStatus}</li>
+                </ul>
+              </div>
+
+              <div className="detail-card" style={{ gridColumn: '1 / -1' }}>
+                <h3>Inquiry details</h3>
+                <p style={{ color: '#333', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                  {selectedPartner.details || 'No additional details were provided for this submission.'}
+                </p>
+              </div>
+
+              <div className="detail-card" style={{ gridColumn: '1 / -1' }}>
+                <h3>Admin review</h3>
+                <label className="field" style={{ marginBottom: '1rem' }}>
+                  <span>Change type</span>
+                  <select value={partnerAction} onChange={(event) => setPartnerAction(event.target.value as typeof partnerAction)}>
+                    <option value="view">View only</option>
+                    <option value="update">Update details</option>
+                    <option value="approve">Approve partner</option>
+                    <option value="reject">Reject partner</option>
+                  </select>
+                </label>
+
+                {partnerAction === 'update' ? (
+                  <div className="partner-form-grid">
+                    <label className="partner-form-field partner-form-field-full">
+                      <span>Company</span>
+                      <input value={drawerForm.company} onChange={(event) => updateDrawerField('company', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Category</span>
+                      <input value={drawerForm.category} onChange={(event) => updateDrawerField('category', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Contact person</span>
+                      <input value={drawerForm.contactPerson} onChange={(event) => updateDrawerField('contactPerson', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Email</span>
+                      <input type="email" value={drawerForm.email} onChange={(event) => updateDrawerField('email', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Phone</span>
+                      <input value={drawerForm.phone} onChange={(event) => updateDrawerField('phone', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Country</span>
+                      <input value={drawerForm.country} onChange={(event) => updateDrawerField('country', event.target.value)} />
+                    </label>
+                  </div>
+                ) : partnerAction === 'approve' ? (
+                  <p style={{ color: '#0c5a10' }}>Approve this partner record to move it into confirmed status after verifying details.</p>
+                ) : partnerAction === 'reject' ? (
+                  <p style={{ color: '#8f1d20' }}>Reject this partner record if the submission is not suitable.</p>
+                ) : (
+                  <p style={{ color: '#6b778c' }}>Review the partner information and choose an action before moving forward.</p>
+                )}
+
+                <div className="management-actions" style={{ marginTop: '1rem', gap: '0.75rem' }}>
+                  {partnerAction === 'update' ? (
+                    <button type="button" className="btn btn-primary" onClick={() => {
+                      if (!drawerForm.company || !drawerForm.category || !drawerForm.contactPerson || !drawerForm.email) {
+                        showPopup({ type: 'error', message: 'Complete the required partner information before saving.' });
+                        return;
+                      }
+                      setForm(drawerForm);
+                      setEditing(selectedPartner);
+                      setFormOpen(true);
+                      closePartnerDetails();
+                    }}>
+                      Save edits
+                    </button>
+                  ) : null}
+
+                  {partnerAction === 'approve' ? (
+                    <button type="button" className="btn btn-primary" onClick={() => {
+                      if (selectedPartner) {
+                        setConfirm({ kind: 'status', partner: selectedPartner, status: 'Confirmed' });
+                        closePartnerDetails();
+                      }
+                    }}>
+                      Confirm approval
+                    </button>
+                  ) : null}
+
+                  {partnerAction === 'reject' ? (
+                    <button type="button" className="btn btn-outline" onClick={() => {
+                      if (selectedPartner) {
+                        setConfirm({ kind: 'status', partner: selectedPartner, status: 'Rejected' });
+                        closePartnerDetails();
+                      }
+                    }}>
+                      Confirm rejection
+                    </button>
+                  ) : null}
+
+                  <button type="button" className="btn btn-outline" onClick={closePartnerDetails}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </>
+      )}
     </AdminWorkspaceLayout>
   );
 }
