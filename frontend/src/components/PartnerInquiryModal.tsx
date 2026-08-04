@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { usePopup } from '../contexts/PopupContext';
+import { countries } from '../data/countries';
 
 type InquiryType = 'partnership' | 'side-event' | 'challenge';
 
@@ -16,13 +17,14 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
     organization: '',
     email: '',
     phone: '',
+    country: '',
     details: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!open) return null;
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
@@ -72,6 +74,7 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
           organization: form.organization.trim(),
           email: form.email.trim(),
           phone: form.phone.trim() || null,
+          country: form.country.trim() || null,
           details: form.details.trim() || null,
         }),
       });
@@ -80,6 +83,18 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
 
       if (!response.ok) {
         throw new Error(payload.message || 'We could not submit your request right now.');
+      }
+
+      // If the server returned a warning (partial failure), surface that to the user
+      if (payload?.warning) {
+        setForm({ name: '', organization: '', email: '', phone: '', details: '' });
+        showPopup({
+          type: 'info',
+          title: 'Saved with warning',
+          message: payload.warning,
+        });
+        onClose();
+        return;
       }
 
       setForm({ name: '', organization: '', email: '', phone: '', details: '' });
@@ -133,6 +148,15 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
           <label className="partner-field">
             <span>Phone number</span>
             <input name="phone" value={form.phone} onChange={handleChange} placeholder="Optional" />
+          </label>
+          <label className="partner-field">
+            <span>Country</span>
+            <select name="country" value={form.country} onChange={handleChange} required>
+              <option value="">Select country</option>
+              {countries.map((country) => (
+                <option key={country} value={country}>{country}</option>
+              ))}
+            </select>
           </label>
           <label className="partner-field partner-field-textarea">
             <span>{currentCopy.detailLabel}</span>

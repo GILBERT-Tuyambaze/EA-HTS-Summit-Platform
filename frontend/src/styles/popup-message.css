@@ -1,25 +1,25 @@
 .popup-message-overlay {
   position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
   z-index: 2147483649;
   display: grid;
   place-items: center;
-  background: rgba(10, 15, 35, 0.4);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 15, 35, 0.32);
+  backdrop-filter: blur(16px);
+  padding: 1.5rem;
 }
 
 .popup-message-card {
   width: min(100%, 520px);
-  margin: 0 1rem;
+  max-width: 520px;
+  margin: 0 auto;
   padding: 1.75rem 1.5rem;
   border-radius: 32px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(24px);
-  color: #09101d;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 40px 90px rgba(10, 18, 45, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(28px);
+  color: #f8fafc;
   animation: popup-fade 0.2s ease-out;
 }
 
@@ -61,30 +61,30 @@
 }
 
 .popup-success {
-  background: linear-gradient(135deg, rgba(12, 58, 38, 0.94), rgba(17, 87, 56, 0.82));
-  border-color: rgba(150, 230, 187, 0.9);
-  color: #f1fff5;
-  box-shadow: 0 30px 80px rgba(8, 48, 30, 0.28);
+  background: linear-gradient(135deg, rgba(28, 115, 70, 0.88), rgba(22, 132, 85, 0.72));
+  border-color: rgba(157, 255, 187, 0.88);
+  color: #f4fff7;
+  box-shadow: 0 32px 96px rgba(17, 95, 57, 0.24);
 }
 
 .popup-success .popup-message-title,
 .popup-success .popup-message-body {
-  color: #f4fff7;
+  color: #effff4;
 }
 
 .popup-success .popup-close-button {
-  color: #e5fff0;
+  color: rgba(237, 255, 246, 0.95);
 }
 
 .popup-success .popup-close-button:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .popup-error {
-  background: linear-gradient(135deg, rgba(93, 15, 24, 0.97), rgba(149, 26, 39, 0.84));
-  border-color: rgba(255, 193, 198, 0.92);
+  background: linear-gradient(135deg, rgba(153, 33, 35, 0.95), rgba(183, 44, 54, 0.78));
+  border-color: rgba(255, 138, 128, 0.9);
   color: #fff7f7;
-  box-shadow: 0 30px 80px rgba(75, 12, 20, 0.28);
+  box-shadow: 0 32px 96px rgba(94, 22, 28, 0.26);
 }
 
 .popup-error .popup-message-title,
@@ -93,11 +93,11 @@
 }
 
 .popup-error .popup-close-button {
-  color: #ffe4e6;
+  color: rgba(255, 230, 233, 0.96);
 }
 
 .popup-error .popup-close-button:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .popup-info {

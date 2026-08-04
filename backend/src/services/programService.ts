@@ -10,7 +10,8 @@ export type SessionInput = {
   end_time: string;
   location: string;
   track: string;
-  speaker_id?: string | null;
+  speaker_id?: string | null; // kept for backward compatibility
+  speaker_ids?: string[]; // new multi-speaker support
 };
 
 export type SpeakerInput = {
@@ -30,37 +31,104 @@ const ensureId = (id: string) => {
 };
 
 export async function listSessions() {
-  const { data, error } = await supabaseAdmin.from('sessions').select('*, speakers(name)').order('start_time');
+  const { data: sessions, error } = await supabaseAdmin.from('sessions').select('*').order('start_time');
   fail(error);
-  return (data ?? []) as any[];
+  const sessionList = (sessions ?? []) as any[];
+
+  if (sessionList.length === 0) return sessionList;
+
+  const ids = sessionList.map((s) => s.id);
+  const { data: joins, error: joinError } = await supabaseAdmin
+    .from('session_speakers')
+    .select('session_id, speakers(id, name, organization, email, biography, image)')
+    .in('session_id', ids);
+
+  fail(joinError);
+
+  const map: Record<string, any[]> = {};
+  (joins ?? []).forEach((j: any) => {
+    const sid = String(j.session_id);
+    map[sid] = map[sid] ?? [];
+    map[sid].push(j.speakers);
+  });
+
+  return sessionList.map((s) => ({ ...s, speakers: map[s.id] ?? [] }));
 }
 
 export async function createSession(input: SessionInput, adminId?: string) {
-  const { data, error } = await supabaseAdmin.from('sessions').insert({
-    title: input.title,
-    description: input.description ?? null,
-    date: input.date,
-    start_time: input.start_time,
-    end_time: input.end_time,
-    location: input.location,
-    track: input.track,
-    speaker_id: input.speaker_id ?? null,
-  }).select().single();
+  const { data, error } = await supabaseAdmin
+    .from('sessions')
+    .insert({
+      title: input.title,
+      description: input.description ?? null,
+      date: input.date,
+      start_time: input.start_time,
+      end_time: input.end_time,
+      location: input.location,
+      track: input.track,
+      speaker_id: input.speaker_id ?? null,
+    })
+    .select()
+    .single();
   fail(error);
+
+  // if speaker_ids provided, populate join table
+  const speakerIds = Array.isArray(input.speaker_ids) ? input.speaker_ids : input.speaker_id ? [input.speaker_id] : [];
+  if (speakerIds.length > 0) {
+    const rows = speakerIds.map((sid) => ({ session_id: data.id, speaker_id: sid }));
+    const { error: joinError } = await supabaseAdmin.from('session_speakers').insert(rows);
+    fail(joinError);
+  }
+
   if (adminId) {
     await logAuditEvent({ adminId, action: 'program.session_created', target: `session:${data.id}`, metadata: { title: data.title, track: data.track } });
   }
-  return data as any;
+  // attach speakers to returned session
+  const { data: withSpeakers, error: reloadErr } = await supabaseAdmin
+    .from('sessions')
+    .select('*')
+    .eq('id', data.id)
+    .single();
+  fail(reloadErr);
+  const { data: joins, error: joinErr } = await supabaseAdmin
+    .from('session_speakers')
+    .select('speakers(id, name, organization, email, biography, image)')
+    .eq('session_id', data.id);
+  fail(joinErr);
+  return { ...withSpeakers, speakers: joins ?? [] } as any;
 }
 
 export async function updateSession(id: string, input: Partial<SessionInput>, adminId?: string) {
   ensureId(id);
-  const { data, error } = await supabaseAdmin.from('sessions').update(input).eq('id', id).select().single();
+  // handle speaker_ids updates separately
+  const speakerIds = Array.isArray(input.speaker_ids) ? input.speaker_ids : input.speaker_id ? [input.speaker_id] : undefined;
+  const toUpdate = { ...input } as any;
+  delete toUpdate.speaker_ids;
+
+  const { data, error } = await supabaseAdmin.from('sessions').update(toUpdate).eq('id', id).select().single();
   fail(error);
+
+  if (Array.isArray(speakerIds)) {
+    // remove existing entries
+    const { error: delErr } = await supabaseAdmin.from('session_speakers').delete().eq('session_id', id);
+    fail(delErr);
+    if (speakerIds.length > 0) {
+      const rows = speakerIds.map((sid) => ({ session_id: id, speaker_id: sid }));
+      const { error: insErr } = await supabaseAdmin.from('session_speakers').insert(rows);
+      fail(insErr);
+    }
+  }
+
   if (adminId) {
     await logAuditEvent({ adminId, action: 'program.session_updated', target: `session:${data.id}`, metadata: { title: data.title, track: data.track } });
   }
-  return data as any;
+
+  // return session with attached speakers
+  const { data: withSpeakers, error: reloadErr } = await supabaseAdmin.from('sessions').select('*').eq('id', id).single();
+  fail(reloadErr);
+  const { data: joins, error: joinErr } = await supabaseAdmin.from('session_speakers').select('speakers(id, name, organization, email, biography, image)').eq('session_id', id);
+  fail(joinErr);
+  return { ...withSpeakers, speakers: joins ?? [] } as any;
 }
 
 export async function deleteSession(id: string, adminId?: string) {

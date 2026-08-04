@@ -38,6 +38,9 @@ const partnerInquirySchema = z.object({
   organization: z.string().trim().min(2),
   email: z.string().email(),
   phone: z.string().trim().nullable().optional(),
+  country: z.string().trim().nullable().optional().refine((value) => !value || countries.includes(value), {
+    message: 'Country must be selected from the supported list.',
+  }),
   details: z.string().trim().max(2000).nullable().optional(),
 });
 
@@ -89,6 +92,7 @@ const createInquirySubmission = async (req: any, res: any, next: any, inquiryTyp
       organization: parsed.organization,
       email: parsed.email,
       phone: parsed.phone ?? null,
+      country: parsed.country ?? null,
       details: parsed.details ?? null,
       category: categoryMap[inquiryType],
     });
@@ -99,16 +103,22 @@ const createInquirySubmission = async (req: any, res: any, next: any, inquiryTyp
       challenge: 'startup challenge application',
     } as const;
 
-    await sendBrevoEmail({
-      to: parsed.email,
-      name: parsed.name,
-      subject: 'We received your submission',
-      template: 'manual',
-      payload: { name: parsed.name },
-      message: `Thank you, ${parsed.name}. We have received your ${labelMap[inquiryType]} for ${parsed.organization}. Our team will review it and follow up shortly with the next steps.`,
-    });
+    try {
+      await sendBrevoEmail({
+        to: parsed.email,
+        name: parsed.name,
+        subject: 'We received your submission',
+        template: 'manual',
+        payload: { name: parsed.name },
+        message: `Thank you, ${parsed.name}. We have received your ${labelMap[inquiryType]} for ${parsed.organization}. Our team will review it and follow up shortly with the next steps.`,
+      });
 
-    res.status(201).json({ ok: true, inquiry });
+      res.status(201).json({ ok: true, inquiry });
+    } catch (emailErr) {
+      console.error('Failed to send confirmation email for inquiry:', { error: emailErr, inquiryId: inquiry?.id });
+      // The inquiry was saved, but the confirmation email failed. Return a 201 with a warning
+      return res.status(201).json({ ok: true, inquiry, warning: 'Your request was saved but we were unable to send a confirmation email. Our team will follow up shortly.' });
+    }
   } catch (error) {
     next(error);
   }

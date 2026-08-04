@@ -1,3 +1,102 @@
-import { Router } from 'express'; import { z } from 'zod'; import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth.js'; import * as service from '../services/programService.js'; import { logAuditEvent } from '../services/auditService.js';
-const router=Router();router.use((q,r,n)=>void requireAdmin(q as AuthenticatedRequest,r,n));const session=z.object({title:z.string().trim().min(1),description:z.string().nullable().optional(),date:z.string().min(1),speaker_id:z.string().uuid().nullable().optional(),track:z.string().trim().min(1),location:z.string().trim().min(1),start_time:z.string().min(1),end_time:z.string().min(1)});const speaker=z.object({name:z.string().trim().min(1),organization:z.string().nullable().optional(),email:z.string().email().nullable().optional(),biography:z.string().nullable().optional(),image:z.string().url().nullable().optional()});const audit=(q:AuthenticatedRequest,a:string,t:string)=>logAuditEvent({adminId:q.admin?.email,action:a,target:t});
-router.get('/',async(_q,r,n)=>{try{const [sessions,speakers,stats]=await Promise.all([service.listSessions(),service.listSpeakers(),service.getProgramStats()]);r.json({sessions,speakers,stats})}catch(e){n(e)}});router.post('/sessions',async(q:AuthenticatedRequest,r,n)=>{try{const x=await service.createSession(session.parse(q.body));await audit(q,'session.created',`session:${x.id}`);r.status(201).json(x)}catch(e){n(e)}});router.patch('/sessions/:id',async(q:AuthenticatedRequest,r,n)=>{try{const x=await service.updateSession(String(q.params.id),session.partial().parse(q.body));await audit(q,'session.updated',`session:${x.id}`);r.json(x)}catch(e){n(e)}});router.delete('/sessions/:id',async(q:AuthenticatedRequest,r,n)=>{try{const id=String(q.params.id);await service.deleteSession(id);await audit(q,'session.deleted',`session:${id}`);r.status(204).send()}catch(e){n(e)}});router.post('/speakers',async(q:AuthenticatedRequest,r,n)=>{try{const x=await service.createSpeaker(speaker.parse(q.body));await audit(q,'speaker.created',`speaker:${x.id}`);r.status(201).json(x)}catch(e){n(e)}});router.patch('/speakers/:id',async(q:AuthenticatedRequest,r,n)=>{try{const x=await service.updateSpeaker(String(q.params.id),speaker.partial().parse(q.body));await audit(q,'speaker.updated',`speaker:${x.id}`);r.json(x)}catch(e){n(e)}});router.delete('/speakers/:id',async(q:AuthenticatedRequest,r,n)=>{try{const id=String(q.params.id);await service.deleteSpeaker(id);await audit(q,'speaker.deleted',`speaker:${id}`);r.status(204).send()}catch(e){n(e)}});export default router;
+import { Router } from 'express';
+import { z } from 'zod';
+import { requireAdmin, type AuthenticatedRequest } from '../middleware/auth.js';
+import * as service from '../services/programService.js';
+import { logAuditEvent } from '../services/auditService.js';
+
+const router = Router();
+router.use((q, r, n) => void requireAdmin(q as AuthenticatedRequest, r, n));
+
+const session = z.object({
+	title: z.string().trim().min(1),
+	description: z.string().nullable().optional(),
+	date: z.string().min(1),
+	speaker_ids: z.array(z.string().uuid()).nullable().optional(),
+	track: z.string().trim().min(1),
+	location: z.string().trim().min(1),
+	start_time: z.string().min(1),
+	end_time: z.string().min(1),
+});
+
+const speaker = z.object({
+	name: z.string().trim().min(1),
+	organization: z.string().nullable().optional(),
+	email: z.string().email().nullable().optional(),
+	biography: z.string().nullable().optional(),
+	image: z.string().url().nullable().optional(),
+});
+
+const audit = (q: AuthenticatedRequest, a: string, t: string) => logAuditEvent({ adminId: q.admin?.email, action: a, target: t });
+
+router.get('/', async (_q, r, n) => {
+	try {
+		const [sessions, speakers, stats] = await Promise.all([service.listSessions(), service.listSpeakers(), service.getProgramStats()]);
+		r.json({ sessions, speakers, stats });
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.post('/sessions', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const x = await service.createSession(session.parse(q.body), q.admin?.email);
+		await audit(q, 'session.created', `session:${x.id}`);
+		r.status(201).json(x);
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.patch('/sessions/:id', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const x = await service.updateSession(String(q.params.id), session.partial().parse(q.body), q.admin?.email);
+		await audit(q, 'session.updated', `session:${x.id}`);
+		r.json(x);
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.delete('/sessions/:id', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const id = String(q.params.id);
+		await service.deleteSession(id, q.admin?.email);
+		await audit(q, 'session.deleted', `session:${id}`);
+		r.status(204).send();
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.post('/speakers', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const x = await service.createSpeaker(speaker.parse(q.body), q.admin?.email);
+		await audit(q, 'speaker.created', `speaker:${x.id}`);
+		r.status(201).json(x);
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.patch('/speakers/:id', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const x = await service.updateSpeaker(String(q.params.id), speaker.partial().parse(q.body), q.admin?.email);
+		await audit(q, 'speaker.updated', `speaker:${x.id}`);
+		r.json(x);
+	} catch (e) {
+		n(e);
+	}
+});
+
+router.delete('/speakers/:id', async (q: AuthenticatedRequest, r, n) => {
+	try {
+		const id = String(q.params.id);
+		await service.deleteSpeaker(id, q.admin?.email);
+		await audit(q, 'speaker.deleted', `speaker:${id}`);
+		r.status(204).send();
+	} catch (e) {
+		n(e);
+	}
+});
+
+export default router;

@@ -137,7 +137,8 @@
 }
 
 .partner-field input,
-.partner-field textarea {
+.partner-field textarea,
+.partner-field select {
   width: 100%;
   border: 0;
   border-radius: 0;
@@ -146,6 +147,9 @@
   padding: 0.15rem 0;
   font: inherit;
   outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .partner-field input::placeholder,
@@ -158,6 +162,24 @@
   resize: vertical;
   padding-top: 0.2rem;
 }
+
+/* Clear native focus outlines on selects and show a subtle IEEE-blue ring */
+.partner-field select:focus,
+.partner-field input:focus,
+.partner-field textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 102, 153, 0.12);
+  border-color: transparent;
+}
+
+/* Firefox specific focus fix to avoid native dotted outline */
+.partner-field select:-moz-focusring {
+  outline: none;
+  color: var(--ieee-text);
+}
+
+/* Small caret spacing so the selected value doesn't touch the edge */
+.partner-field select { padding-right: 1rem; }
 
 .partner-modal-actions {
   display: flex;

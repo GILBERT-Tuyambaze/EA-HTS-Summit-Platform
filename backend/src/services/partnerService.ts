@@ -30,7 +30,15 @@ export type PartnerInquiryInput = {
 
 export type PartnerRecord = PartnerInput & { id: string; status: string; created_at: string; updated_at: string };
 
-const fail = (error: any) => { if (error) throw new AppError(error.message, 500); };
+const fail = (error: any, context = 'database') => {
+  if (!error) return;
+  if (error instanceof Error) {
+    console.error(`Supabase error [${context}]:`, error);
+  } else {
+    console.error(`Supabase error [${context}]:`, JSON.stringify(error));
+  }
+  throw new AppError(error?.message ?? 'An unexpected database error occurred.', 500);
+};
 
 const ensureId = (id: string) => {
   if (!id) throw new AppError('A valid identifier is required.', 400);
@@ -83,7 +91,7 @@ export async function createPartnerInquiry(input: PartnerInquiryInput, adminId?:
     throw new AppError('Name, organization, and email are required.', 400);
   }
 
-  const { data, error } = await supabaseAdmin.from('partners').insert({
+  const payload = {
     company: organization,
     organization,
     category,
@@ -97,8 +105,23 @@ export async function createPartnerInquiry(input: PartnerInquiryInput, adminId?:
     details: details ?? null,
     source: 'website',
     logo: null,
-  }).select().single();
-  fail(error);
+  };
+
+  let data;
+  let error;
+
+  try {
+    ({ data, error } = await supabaseAdmin.from('partners').insert(payload).select().single());
+  } catch (insertError) {
+    console.error('Partner inquiry insert failed: unable to communicate with Supabase', {
+      payload,
+      error: insertError,
+      supabaseUrl: process.env.SUPABASE_URL,
+    });
+    throw new AppError('Unable to save partner inquiry at this time. Please try again later.', 500);
+  }
+
+  fail(error, 'partner-inquiry-insert');
   if (adminId) {
     await logAuditEvent({ adminId, action: 'partners.partner_inquiry_created', target: `partner:${data.id}`, metadata: { company: data.company, status: data.status, category } });
   }

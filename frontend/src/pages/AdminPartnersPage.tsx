@@ -3,6 +3,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import AdminWorkspaceLayout from '../layouts/AdminWorkspaceLayout';
 import { usePopup } from '../contexts/PopupContext';
 import { useProgress } from '../contexts/ProgressContext';
+import { countries } from '../data/countries';
+import '../styles/admin.css';
 import '../styles/admin-drawer.css';
 import {
   createPartner,
@@ -25,6 +27,7 @@ const blank: PartnerInput = {
   status: 'Pending',
   agreementStatus: 'draft',
   logo: null,
+  details: '',
 };
 
 type InquiryFilter = 'all' | 'Partnership Inquiry' | 'Side Event Proposal' | 'Startup Challenge Application';
@@ -255,7 +258,12 @@ export default function AdminPartnersPage() {
           <div className="partner-form-grid">
             <label className="partner-form-field">
               <span>Category *</span>
-              <input value={form.category} onChange={(event) => change('category', event.target.value)} placeholder="Select category ▼" />
+              <select value={form.category} onChange={(event) => change('category', event.target.value)}>
+                <option value="">Select category</option>
+                <option value="Partnership Inquiry">Partnership Inquiry</option>
+                <option value="Side Event Proposal">Side Event Proposal</option>
+                <option value="Startup Challenge Application">Startup Challenge Application</option>
+              </select>
             </label>
             <label className="partner-form-field">
               <span>Contact Person</span>
@@ -271,7 +279,12 @@ export default function AdminPartnersPage() {
             </label>
             <label className="partner-form-field">
               <span>Country</span>
-              <input value={form.country} onChange={(event) => change('country', event.target.value)} placeholder="Select country ▼" />
+              <select value={form.country} onChange={(event) => change('country', event.target.value)}>
+                <option value="">Select country</option>
+                {countries.map((country) => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
+              </select>
             </label>
             <label className="partner-form-field">
               <span>Agreement Type</span>
@@ -283,6 +296,10 @@ export default function AdminPartnersPage() {
               </select>
             </label>
           </div>
+          <label className="partner-form-field partner-form-field-full">
+            <span>Description</span>
+            <textarea value={form.details || ''} onChange={(event) => change('details', event.target.value)} placeholder="Enter partner inquiry details, proposal summary, or additional remarks" />
+          </label>
         </div>
       </ConfirmModal>
 
