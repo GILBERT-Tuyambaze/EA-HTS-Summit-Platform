@@ -214,7 +214,16 @@ export default function AdminPartnersPage() {
                 {visiblePartners.length ? (
                   visiblePartners.map((partner) => (
                     <tr key={partner.id} onClick={() => openPartnerDetails(partner)} style={{ cursor: 'pointer' }}>
-                      <td>{partner.company}</td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {partner.logo ? (
+                            <img src={partner.logo} alt={`${partner.company} logo`} style={{ width: 32, height: 32, objectFit: 'contain', borderRadius: 6, background: '#fff', border: '1px solid #e5e9f0' }} />
+                          ) : (
+                            <div style={{ width: 32, height: 32, display: 'grid', placeItems: 'center', borderRadius: 8, background: '#f3f6fa', color: '#3b4b63', fontWeight: 700 }}>{partner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
+                          )}
+                          <span>{partner.company}</span>
+                        </div>
+                      </td>
                       <td>{partner.category}</td>
                       <td>
                         {partner.contactPerson}
@@ -260,7 +269,7 @@ export default function AdminPartnersPage() {
               <span>Category *</span>
               <select value={form.category} onChange={(event) => change('category', event.target.value)}>
                 <option value="">Select category</option>
-                <option value="Partnership Inquiry">Partnership Inquiry</option>
+                <option value="Partnership Inquiry">Our Partners</option>
                 <option value="Side Event Proposal">Side Event Proposal</option>
                 <option value="Startup Challenge Application">Startup Challenge Application</option>
               </select>
@@ -276,6 +285,10 @@ export default function AdminPartnersPage() {
             <label className="partner-form-field">
               <span>Phone Number</span>
               <input value={form.phone} onChange={(event) => change('phone', event.target.value)} placeholder="+94 77 123 4567" />
+            </label>
+            <label className="partner-form-field">
+              <span>Logo URL</span>
+              <input value={form.logo ?? ''} onChange={(event) => change('logo', event.target.value)} placeholder="https://example.com/logo.png" />
             </label>
             <label className="partner-form-field">
               <span>Country</span>
@@ -325,11 +338,18 @@ export default function AdminPartnersPage() {
           <aside className="detail-drawer open" role="dialog" aria-label="Partner details">
             <button className="drawer-close" onClick={closePartnerDetails} aria-label="Close details">✕</button>
             <div className="detail-header">
-              <div>
-                <p className="eyebrow admin-eyebrow">Partner snapshot</p>
-                <h2>{selectedPartner.company}</h2>
-                <p style={{ marginTop: 8, color: '#6b778c' }}>{selectedPartner.category} · {selectedPartner.status}</p>
-              </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  {selectedPartner.logo ? (
+                    <img src={selectedPartner.logo} alt={`${selectedPartner.company} logo`} style={{ width: 60, height: 60, objectFit: 'contain', borderRadius: 14, background: '#fff', border: '1px solid #e8edf4' }} />
+                  ) : (
+                    <div style={{ width: 60, height: 60, display: 'grid', placeItems: 'center', borderRadius: 20, background: '#eef4fb', color: '#1f3b5f', fontWeight: 800 }}>{selectedPartner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
+                  )}
+                  <div>
+                    <p className="eyebrow admin-eyebrow">Partner snapshot</p>
+                    <h2>{selectedPartner.company}</h2>
+                    <p style={{ marginTop: 8, color: '#6b778c' }}>{selectedPartner.category} · {selectedPartner.status}</p>
+                  </div>
+                </div>
             </div>
 
             <div className="detail-grid">
@@ -391,6 +411,10 @@ export default function AdminPartnersPage() {
                     <label className="partner-form-field">
                       <span>Phone</span>
                       <input value={drawerForm.phone} onChange={(event) => updateDrawerField('phone', event.target.value)} />
+                    </label>
+                    <label className="partner-form-field">
+                      <span>Logo URL</span>
+                      <input value={drawerForm.logo ?? ''} onChange={(event) => updateDrawerField('logo', event.target.value)} placeholder="https://example.com/logo.png" />
                     </label>
                     <label className="partner-form-field">
                       <span>Country</span>

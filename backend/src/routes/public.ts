@@ -8,7 +8,7 @@ import { createRegistration, findRegistrationByEmailOrPhone } from '../services/
 import { sendBrevoEmail } from '../services/brevoService.js';
 import { acceptInvitation, getInvitationByToken } from '../services/accessService.js';
 import { getAdminByEmail } from '../services/adminService.js';
-import { createPartnerInquiry } from '../services/partnerService.js';
+import { createPartnerInquiry, listPublicPartners } from '../services/partnerService.js';
 
 const router = Router();
 
@@ -130,6 +130,60 @@ router.post('/partner-inquiries', async (req, res, next) => {
 
 router.post('/side-event-proposals', async (req, res, next) => {
   await createInquirySubmission(req, res, next, 'side-event');
+});
+
+router.get('/partners', async (_req, res, next) => {
+  try {
+    const partners = await listPublicPartners();
+    res.json({ partners });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Public programme data (sessions + speakers)
+router.get('/program', async (_req, res, next) => {
+  try {
+    const { data: sessions, error: sessErr } = await supabasePublic.from('sessions').select('*').order('date');
+    if (sessErr) throw sessErr;
+
+    const { data: speakers, error: spErr } = await supabasePublic.from('speakers').select('id, name, organization, biography, image').order('name');
+    if (spErr) throw spErr;
+
+    const { data: joins, error: joinErr } = await supabasePublic.from('session_speakers').select('session_id, speakers(id, name, organization, biography, image)');
+    if (joinErr) throw joinErr;
+
+    const map: Record<string, any[]> = {};
+    (joins ?? []).forEach((j: any) => {
+      const sid = String(j.session_id);
+      map[sid] = map[sid] ?? [];
+      map[sid].push(j.speakers);
+    });
+
+    const sessionsWithSpeakers = (sessions ?? []).map((s: any) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description,
+      date: s.date,
+      start_time: s.start_time,
+      end_time: s.end_time,
+      location: s.location ?? s.room,
+      track: s.track,
+      speakers: map[s.id] ?? [],
+    }));
+
+    const stats = {
+      sessions: (sessions ?? []).length,
+      speakers: (speakers ?? []).length,
+      tracks: new Set((sessions ?? []).map((x: any) => x.track)).size,
+      rooms: new Set((sessions ?? []).map((x: any) => x.location ?? x.room)).size,
+    };
+
+    res.json({ sessions: sessionsWithSpeakers, speakers: speakers ?? [], stats });
+  } catch (error) {
+    console.error('Public /program error', error);
+    next(error);
+  }
 });
 
 router.post('/challenge-applications', async (req, res, next) => {

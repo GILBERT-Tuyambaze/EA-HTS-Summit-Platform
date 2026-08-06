@@ -13,6 +13,7 @@ create table if not exists public.registrations (
   payment_status text not null default 'Pending' check (payment_status in ('Pending', 'Paid', 'Rejected')),
   payment_method text,
   payment_reference text,
+  payment_amount numeric(12,2) check (payment_amount >= 0),
   notes text,
   verified_by text,
   verified_at timestamptz,

@@ -18,6 +18,7 @@ export default function VerifyPaymentModal({
   const [paymentStatus, setPaymentStatus] = useState<'Paid' | 'Rejected'>('Paid');
   const [paymentMethod, setPaymentMethod] = useState<'MTN_MOMO' | 'AIRTEL_MONEY' | 'BANK_TRANSFER'>('MTN_MOMO');
   const [paymentReference, setPaymentReference] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState<string>('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const { showPopup } = usePopup();
@@ -50,6 +51,21 @@ export default function VerifyPaymentModal({
       return;
     }
 
+    const parsedAmount = paymentAmount.trim() ? Number(paymentAmount) : undefined;
+    if (paymentStatus === 'Paid' && (parsedAmount === undefined || Number.isNaN(parsedAmount) || parsedAmount < 0)) {
+      updateProgress({
+        steps: [
+          { label: 'Validating input', status: 'error' },
+          { label: 'Updating payment record', status: 'pending' },
+          { label: 'Sending notification', status: 'pending' },
+        ],
+      });
+      showPopup({ type: 'error', message: 'A valid payment amount is required when marking as Paid.' });
+      closeProgress();
+      setSaving(false);
+      return;
+    }
+
     try {
       updateProgress({
         steps: [
@@ -63,6 +79,7 @@ export default function VerifyPaymentModal({
         paymentStatus,
         paymentMethod,
         paymentReference,
+        paymentAmount: paymentAmount.trim() ? Number(paymentAmount) : undefined,
         verificationNotes: notes,
       });
 
@@ -128,6 +145,11 @@ export default function VerifyPaymentModal({
           <label className="field">
             <span>Reference number</span>
             <input value={paymentReference} onChange={(e) => setPaymentReference(e.target.value)} />
+          </label>
+
+          <label className="field">
+            <span>Amount paid (USD)</span>
+            <input type="number" min="0" step="0.01" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} placeholder="0.00" />
           </label>
 
           <label className="field">

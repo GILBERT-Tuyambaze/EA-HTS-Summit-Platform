@@ -37,6 +37,7 @@ export type RegistrationRecord = {
   paymentStatus: RegistrationStatus;
   paymentMethod?: string;
   paymentReference?: string;
+  paymentAmount?: number;
   notes?: string;
   verifiedBy?: string;
   verifiedAt?: string;
@@ -59,6 +60,7 @@ export type RegistrationInput = {
   paymentStatus?: RegistrationStatus;
   paymentMethod?: string;
   paymentReference?: string;
+  paymentAmount?: number;
   notes?: string;
 };
 
@@ -114,6 +116,7 @@ function mapApiRegistration(raw: Record<string, unknown>): RegistrationRecord {
     paymentStatus: (raw.payment_status ?? raw.paymentStatus ?? 'Pending') as RegistrationStatus,
     paymentMethod: raw.payment_method ? String(raw.payment_method) : undefined,
     paymentReference: raw.payment_reference ? String(raw.payment_reference) : undefined,
+    paymentAmount: raw.payment_amount != null ? Number(raw.payment_amount) : undefined,
     notes: raw.notes ? String(raw.notes) : undefined,
     verifiedBy: raw.verified_by ? String(raw.verified_by) : undefined,
     verifiedAt: raw.verified_at ? String(raw.verified_at) : undefined,
@@ -223,6 +226,7 @@ export async function updateRegistration(id: string, updates: Partial<Registrati
       paymentStatus: updates.paymentStatus,
       paymentMethod: updates.paymentMethod,
       paymentReference: updates.paymentReference,
+      paymentAmount: updates.paymentAmount,
       notes: updates.notes,
     }),
   });
@@ -289,9 +293,9 @@ export async function deleteRegistrationClient(id: string) {
   });
 }
 
-export async function verifyPayment(id: string, payload: { paymentStatus: 'Paid' | 'Rejected'; paymentMethod?: 'MTN_MOMO' | 'AIRTEL_MONEY' | 'BANK_TRANSFER'; paymentReference?: string; verificationNotes?: string; }) {
+export async function verifyPayment(id: string, payload: { paymentStatus: 'Paid' | 'Rejected'; paymentMethod?: 'MTN_MOMO' | 'AIRTEL_MONEY' | 'BANK_TRANSFER'; paymentReference?: string; paymentAmount?: number; verificationNotes?: string; }) {
   const token = getAuthToken();
-  const response = await apiFetch<Record<string, unknown>>(`/admin/registrations/${id}/payment`, {
+  const response = await apiFetch<Record<string, unknown>>(`/admin/registrations/${id}`, {
     method: 'PATCH',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: JSON.stringify(payload),

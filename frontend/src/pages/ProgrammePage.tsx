@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, CalendarDays, CalendarPlus, Clock3, Coffee, Download, Globe2, MapPin, Mic2, Rocket, Sparkles, Users } from 'lucide-react';
 import { GlassCard, SectionTitle, fadeUp } from '../components/PagePrimitives';
@@ -10,7 +10,11 @@ const days = [
   { day: 'Day 3', date: 'Friday, 29 January', theme: 'Impact', summary: 'Celebrate the builders and commitments carrying the work forward.', sessions: [['09:00', 'Morning', 'Startup Challenge', 'Hear from emerging ventures building for people and planet.'], ['11:00', 'Morning', 'Impact showcases', 'Community-led examples of meaningful technology adoption.'], ['14:00', 'Afternoon', 'Awards & closing ceremony', 'Recognise excellence and set the next shared commitments.'], ['17:00', 'Evening', 'Community farewell', 'Continue the conversation beyond Kigali.']] },
 ];
 const tracks = ['Resilience', 'AI for Good', 'Data & Response', 'Connected Communities', 'HealthTech', 'ClimateTech', 'Inclusive Innovation', 'Policy & Ethics'];
-const speakers = [{ name: 'Speaker to be announced', org: 'Regional Innovation Partner', topic: 'Humanitarian technology at scale' }, { name: 'Speaker to be announced', org: 'IEEE Community', topic: 'Engineering with communities' }, { name: 'Speaker to be announced', org: 'Development Partner', topic: 'From pilot to impact' }];
+const fallbackSpeakers = [
+  { name: 'Speaker to be announced', org: 'Regional Innovation Partner', topic: 'Humanitarian technology at scale' },
+  { name: 'Speaker to be announced', org: 'IEEE Community', topic: 'Engineering with communities' },
+  { name: 'Speaker to be announced', org: 'Development Partner', topic: 'From pilot to impact' },
+];
 
 function DailyProgramme() {
   const [open, setOpen] = useState(0);
@@ -64,12 +68,42 @@ function ProgrammeHero() {
 
 export default function ProgrammePage() {
   const [activeTrack, setActiveTrack] = useState(0);
+  const [liveSpeakers, setLiveSpeakers] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/program');
+        if (!res.ok) return;
+        const payload = await res.json();
+        if (mounted && Array.isArray(payload.speakers)) setLiveSpeakers(payload.speakers);
+      } catch (err) {
+        // ignore public API failures; keep fallback
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const speakersToShow = liveSpeakers ?? fallbackSpeakers;
+
   return <main className="programme-page">
     <ProgrammeHero />
     <section className="page-section" id="programme-overview"><div className="container"><SectionTitle eyebrow="PROGRAMME OVERVIEW" title="A shared journey from welcome to action." /><ol className="programme-flow">{['Registration', 'Opening Ceremony', 'Keynotes', 'Breakout Sessions', 'Demo Village', 'Networking', 'Awards'].map((item, index) => <li key={item}><span>{index + 1}</span>{item}</li>)}</ol></div></section>
     <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="DAILY AGENDA" title="Build your three-day summit experience." copy="Times and speakers will be confirmed with registered participants before the event." /><DailyProgramme /></div></section>
     <section className="page-section"><div className="container"><SectionTitle eyebrow="PARALLEL SESSIONS" title="Choose the conversations that move your work forward." /><div className="track-tabs" role="tablist" aria-label="Programme tracks">{tracks.map((track, index) => <button key={track} role="tab" aria-selected={activeTrack === index} className={activeTrack === index ? 'active' : ''} onClick={() => setActiveTrack(index)}>{String(index + 1).padStart(2, '0')} {track}</button>)}</div><AnimatePresence mode="wait"><motion.div key={activeTrack} className="track-detail" role="tabpanel" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}><Sparkles /><div><p className="eyebrow">{tracks[activeTrack]}</p><h3>Detailed sessions coming soon</h3><p>Curated panels, practical case studies and peer exchange for delegates working across East Africa.</p></div></motion.div></AnimatePresence></div></section>
-    <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="FEATURED SPEAKERS" title="Voices from across the ecosystem." /><div className="speaker-grid">{speakers.map((speaker, index) => <GlassCard key={speaker.topic} className="speaker-card"><div className="speaker-photo"><Mic2 /><span>2027</span></div><p className="eyebrow">{speaker.org}</p><h3>{speaker.name}</h3><p>{speaker.topic}</p></GlassCard>)}</div></div></section>
+    <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="FEATURED SPEAKERS" title="Voices from across the ecosystem." /><div className="speaker-grid">{speakersToShow.map((speaker: any, index: number) => (
+      <GlassCard key={speaker.id ?? index} className="speaker-card">
+        <div className="speaker-photo">
+          {speaker.image ? <img src={speaker.image} alt={speaker.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Mic2 />}
+        </div>
+        <p className="eyebrow">{speaker.organization ?? speaker.org}</p>
+        <h3>{speaker.name}</h3>
+        <p>{speaker.biography ? (speaker.biography.length > 140 ? `${speaker.biography.slice(0, 140)}…` : speaker.biography) : speaker.topic}</p>
+      </GlassCard>
+    ))}</div></div></section>
     <section className="page-section"><div className="container two-section-grid"><div><SectionTitle eyebrow="WORKSHOPS" title="Designed for practical learning." /><div className="workshop-list">{[['Human-centered design lab', '120 min', 'Innovation Studio', '40 seats'], ['Responsible AI clinic', '90 min', 'Learning Hub', '60 seats'], ['Data readiness roundtable', '75 min', 'Conference Room B', '50 seats']].map(([name, duration, location, capacity]) => <GlassCard key={name}><h3>{name}</h3><p><Clock3 />{duration}<MapPin />{location}<Users />{capacity}</p></GlassCard>)}</div></div><div><SectionTitle eyebrow="DEMO VILLAGE SCHEDULE" title="See innovation in action." /><div className="demo-schedule">{[['10:30', 'Climate & Resilience Zone', 'Live early-warning demonstrations'], ['13:00', 'Health & Inclusion Zone', 'Connected care and accessibility demos'], ['15:30', 'Data & AI Zone', 'Responsible AI showcases']].map(([time, zone, activity]) => <div key={time}><time>{time}</time><div><strong>{zone}</strong><span>{activity}</span></div></div>)}</div></div></div></section>
     <section className="page-section section-soft"><div className="container"><SectionTitle eyebrow="NETWORKING" title="Conversations continue beyond the session room." /><div className="networking-grid">{[[Coffee, 'Community Breakfast'], [Coffee, 'Coffee Breaks'], [Users, 'Industry Mixer'], [Sparkles, 'Gala Dinner']].map(([Icon, label]) => { const EventIcon = Icon as typeof Coffee; return <GlassCard key={label as string}><EventIcon /><h3>{label as string}</h3><p>Space to exchange ideas, meet collaborators and build momentum.</p></GlassCard>; })}</div></div></section>
     <section className="page-cta programme-download"><div className="container"><p className="eyebrow">PLAN YOUR EXPERIENCE</p><h2>Get the programme when it is published.</h2><p>The full agenda and calendar invites will be available closer to the Summit.</p><div><a className="btn btn-gold" href="#programme-download"><Download className="btn-icon" />Download programme PDF</a><a className="btn btn-secondary" href="#programme-download"><CalendarPlus className="btn-icon" />Add to calendar</a><a className="btn btn-secondary" href="/register">Register now</a></div></div></section>

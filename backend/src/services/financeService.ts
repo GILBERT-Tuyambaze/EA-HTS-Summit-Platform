@@ -47,12 +47,42 @@ const ensureId = (id: string) => {
 };
 
 export async function listPayments() {
-  const { data, error } = await supabaseAdmin
-    .from('payments')
-    .select('*, registrations!registration_id(full_name,country,participant_type)')
-    .order('created_at', { ascending: false });
-  fail(error);
-  return (data ?? []) as any[];
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('payments')
+      .select('*, registrations!registration_id(full_name,country,participant_type)')
+      .order('created_at', { ascending: false });
+    fail(error);
+    const payments = (data ?? []) as any[];
+
+    // Also include payments recorded directly on registrations (legacy path)
+    const { data: regs, error: regsErr } = await supabaseAdmin
+      .from('registrations')
+      .select('id, full_name, payment_amount, payment_status, payment_method, payment_reference, created_at')
+      .or('payment_amount.not.is.null,payment_status.eq.Paid');
+    if (regsErr) fail(regsErr);
+    const registrations = (regs ?? []) as any[];
+
+    const seenRegistrationIds = new Set(payments.map((p) => String(p.registration_id ?? '')));
+
+    const synthetic = registrations
+      .filter((r) => !seenRegistrationIds.has(String(r.id)))
+      .map((r) => ({
+        id: `reg:${r.id}`,
+        registration_id: r.id,
+        amount: r.payment_amount != null ? Number(r.payment_amount) : 0,
+        currency: 'USD',
+        payment_method: r.payment_method ?? null,
+        reference_number: r.payment_reference ?? null,
+        status: (String(r.payment_status ?? 'Pending').toLowerCase() as any) || 'pending',
+        created_at: r.created_at,
+        registrations: { full_name: r.full_name, country: r.country },
+      }));
+
+    return [...payments, ...synthetic];
+  } catch (err) {
+    throw new AppError((err as Error).message ?? 'Unable to list payments.', 500);
+  }
 }
 
 export async function getPayment(id: string) {
@@ -232,19 +262,23 @@ export async function updateExpense(id: string, input: Partial<ExpenseInput>, ad
 }
 
 export async function getFinanceOverview() {
-  const [payments, invoices, transactions, expenses] = await Promise.all([listPayments(), listInvoices(), listTransactions(), listExpenses()]);
-  const paid = payments.filter((item: any) => item.status === 'paid').reduce((total: number, item: any) => total + Number(item.amount), 0);
-  const pending = payments.filter((item: any) => item.status === 'pending').reduce((total: number, item: any) => total + Number(item.amount), 0);
-  const expenseTotal = expenses.filter((item: any) => item.status === 'paid').reduce((total: number, item: any) => total + Number(item.amount), 0);
-  return {
-    revenue: paid,
-    pending,
-    refunds: payments.filter((item: any) => item.status === 'refunded').length,
-    paidRegistrations: payments.filter((item: any) => item.status === 'paid').length,
-    invoices: invoices.length,
-    transactions: transactions.length,
-    expenses: expenseTotal,
-  };
+  try {
+    const [payments, invoices, transactions, expenses] = await Promise.all([listPayments(), listInvoices(), listTransactions(), listExpenses()]);
+    const paid = payments.filter((item: any) => String(item.status).toLowerCase() === 'paid').reduce((total: number, item: any) => total + Number(item.amount ?? 0), 0);
+    const pending = payments.filter((item: any) => String(item.status).toLowerCase() === 'pending').reduce((total: number, item: any) => total + Number(item.amount ?? 0), 0);
+    const expenseTotal = expenses.filter((item: any) => String(item.status).toLowerCase() === 'paid').reduce((total: number, item: any) => total + Number(item.amount ?? 0), 0);
+    return {
+      revenue: paid,
+      pending,
+      refunds: payments.filter((item: any) => String(item.status).toLowerCase() === 'refunded').length,
+      paidRegistrations: payments.filter((item: any) => String(item.status).toLowerCase() === 'paid').length,
+      invoices: invoices.length,
+      transactions: transactions.length,
+      expenses: expenseTotal,
+    };
+  } catch (err) {
+    throw new AppError((err as Error).message ?? 'Unable to compute finance overview.', 500);
+  }
 }
 
 export async function getFinanceReport() {
@@ -254,12 +288,17 @@ export async function getFinanceReport() {
 
 export async function getFinanceSummary() {
   const overview = await getFinanceOverview();
-  return { revenue: `$${overview.revenue}`, paid: `$${overview.revenue}`, pending: `$${overview.pending}` };
+  // return numeric values so callers can format as needed
+  return { revenue: overview.revenue, paid: overview.paidRegistrations, pending: overview.pending };
 }
 
 export async function listPaymentQueue() {
-  return (await listPayments())
-    .filter((item: any) => item.status === 'pending')
-    .map((item: any) => ({ id: item.id, participant: item.registrations?.full_name ?? 'Unknown participant', amount: `$${item.amount}`, status: 'Pending', action: 'Verify' }));
+  try {
+    return (await listPayments())
+      .filter((item: any) => String(item.status).toLowerCase() === 'pending')
+      .map((item: any) => ({ id: item.id, participant: item.registrations?.full_name ?? 'Unknown participant', amount: Number(item.amount ?? 0), status: 'Pending', action: 'Verify' }));
+  } catch (err) {
+    throw new AppError((err as Error).message ?? 'Unable to list payment queue.', 500);
+  }
 }
 

@@ -175,6 +175,7 @@ function AdminDashboard({ onOpenEmailCenter }: { onOpenEmailCenter: () => void }
       paymentStatus: nextStatus,
       paymentMethod: selectedRegistration.paymentMethod || 'Manual Update',
       paymentReference: selectedRegistration.paymentReference || 'Admin Update',
+      paymentAmount: selectedRegistration.paymentAmount,
     });
 
     if (updated) {
@@ -191,6 +192,34 @@ function AdminDashboard({ onOpenEmailCenter }: { onOpenEmailCenter: () => void }
       });
 
       setRegistrations(result.registrations);
+    }
+  };
+
+  const handleSaveSelectedRegistration = async () => {
+    if (!selectedRegistration) return;
+
+    const updated = await updateRegistration(selectedRegistration.id, {
+      paymentStatus: selectedRegistration.paymentStatus,
+      paymentMethod: selectedRegistration.paymentMethod,
+      paymentReference: selectedRegistration.paymentReference,
+      paymentAmount: selectedRegistration.paymentAmount,
+      notes: selectedRegistration.notes,
+    });
+
+    if (updated) {
+      const result = await fetchRegistrations({
+        search: debouncedSearch || undefined,
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        participantType: participantFilter !== 'all' ? participantFilter : undefined,
+        country: countryFilter !== 'all' ? countryFilter : undefined,
+        ieeeMember: memberFilter !== 'all' ? memberFilter : undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        page,
+        limit,
+      });
+      setRegistrations(result.registrations);
+      showPopup({ type: 'success', message: 'Participant record updated successfully.' });
     }
   };
 
@@ -580,6 +609,29 @@ function AdminDashboard({ onOpenEmailCenter }: { onOpenEmailCenter: () => void }
                     }} />
                   </label>
                   <label className="field">
+                    <span>Amount paid</span>
+                    <input type="number" min="0" step="0.01" value={selectedRegistration.paymentAmount ?? ''} onChange={async (event) => {
+                      const rawValue = event.target.value;
+                      const parsedValue = rawValue === '' ? undefined : Number(rawValue);
+                      const updated = await updateRegistration(selectedRegistration.id, { paymentAmount: Number.isFinite(parsedValue) ? parsedValue : undefined });
+                      if (updated) {
+                        const result = await fetchRegistrations({
+                          search: debouncedSearch || undefined,
+                          status: statusFilter !== 'all' ? statusFilter : undefined,
+                          participantType: participantFilter !== 'all' ? participantFilter : undefined,
+                          country: countryFilter !== 'all' ? countryFilter : undefined,
+                          ieeeMember: memberFilter !== 'all' ? memberFilter : undefined,
+                          startDate: startDate || undefined,
+                          endDate: endDate || undefined,
+                          page,
+                          limit,
+                        });
+
+                        setRegistrations(result.registrations);
+                      }
+                    }} />
+                  </label>
+                  <label className="field">
                     <span>Admin notes</span>
                     <textarea value={selectedRegistration.notes || ''} onChange={async (event) => {
                       const updated = await updateRegistration(selectedRegistration.id, { notes: event.target.value });
@@ -692,6 +744,29 @@ function AdminDashboard({ onOpenEmailCenter }: { onOpenEmailCenter: () => void }
                 <span>Payment reference</span>
                 <input value={selectedRegistration.paymentReference || ''} onChange={async (event) => {
                   const updated = await updateRegistration(selectedRegistration.id, { paymentReference: event.target.value });
+                  if (updated) {
+                    const result = await fetchRegistrations({
+                      search: debouncedSearch || undefined,
+                      status: statusFilter !== 'all' ? statusFilter : undefined,
+                      participantType: participantFilter !== 'all' ? participantFilter : undefined,
+                      country: countryFilter !== 'all' ? countryFilter : undefined,
+                      ieeeMember: memberFilter !== 'all' ? memberFilter : undefined,
+                      startDate: startDate || undefined,
+                      endDate: endDate || undefined,
+                      page,
+                      limit,
+                    });
+
+                    setRegistrations(result.registrations);
+                  }
+                }} />
+              </label>
+              <label className="field">
+                <span>Amount paid</span>
+                <input type="number" min="0" step="0.01" value={selectedRegistration.paymentAmount ?? ''} onChange={async (event) => {
+                  const rawValue = event.target.value;
+                  const parsedValue = rawValue === '' ? undefined : Number(rawValue);
+                  const updated = await updateRegistration(selectedRegistration.id, { paymentAmount: Number.isFinite(parsedValue) ? parsedValue : undefined });
                   if (updated) {
                     const result = await fetchRegistrations({
                       search: debouncedSearch || undefined,

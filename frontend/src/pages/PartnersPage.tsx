@@ -1,21 +1,90 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, Building2, GraduationCap, Handshake, HeartHandshake, Scale } from 'lucide-react';
 import PartnerInquiryModal from '../components/PartnerInquiryModal';
+import { getPublicPartners, type PublicPartner } from '../services/partnerService';
 
-const groups = [
-  { id: 'ieee', title: 'IEEE Partners', icon: GraduationCap, description: 'Technical leadership, humanitarian engineering networks, and global IEEE reach.', partners: ['IEEE HTB', 'IEEE Foundation', 'IEEE SIGHT', 'IEEE Region 8', 'IEEE Africa Council'] },
-  { id: 'un', title: 'UN Agencies', icon: Scale, description: 'Humanitarian mandates, regional programmes, and development coordination.', partners: ['UNDP', 'UNICEF', 'ITU', 'WHO', 'FAO', 'UNHCR', 'WFP'] },
-  { id: 'development', title: 'Development Organizations', icon: HeartHandshake, description: 'Development finance, capacity building, and inclusive digital transformation.', partners: ['GSMA Mobile for Development', 'World Bank', 'African Development Bank', 'GIZ', 'Mastercard Foundation'] },
-  { id: 'industry', title: 'Industry Partners', icon: Building2, description: 'Technology platforms, connectivity, infrastructure, and private-sector expertise.', partners: ['Microsoft', 'Google', 'Ericsson', 'Nokia', 'MTN', 'Airtel', 'Safaricom'] },
-];
+const categoryMeta: Record<string, { icon: typeof GraduationCap; description: string; title: string }> = {
+  'Partnership Inquiry': {
+    title: 'Our partners',
+    icon: GraduationCap,
+    description: 'Organizations that support EA-HTS 2027 through partnership and collaboration.',
+  },
+  'Side Event Proposal': {
+    title: 'Side event partners',
+    icon: Scale,
+    description: 'Partners submitting side event concepts that extend the summit experience and local dialogue.',
+  },
+  'Startup Challenge Application': {
+    title: 'Startup challenge applicants',
+    icon: HeartHandshake,
+    description: 'Innovators and startups pitching humanitarian technology for regional impact.',
+  },
+};
 
 const opportunities = ['Programme contribution', 'Technology demonstrations', 'Startup support', 'Research visibility', 'Capacity building', 'Regional impact'];
 
 export default function PartnersPage() {
-  const [active, setActive] = useState(groups[0].id);
+  const [partners, setPartners] = useState<PublicPartner[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
-  const group = groups.find(item => item.id === active) ?? groups[0];
-  const Icon = group.icon;
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        setPartners(await getPublicPartners());
+      } catch (error) {
+        console.error('Unable to load partners', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    void load();
+  }, []);
+
+  const groups = useMemo(() => {
+    const map = new Map<string, PublicPartner[]>();
+    partners.forEach((partner) => {
+      const category = partner.category || 'Confirmed partners';
+      const items = map.get(category) ?? [];
+      items.push(partner);
+      map.set(category, items);
+    });
+    return Array.from(map.entries()).map(([title, items]) => ({
+      title,
+      items,
+      meta: categoryMeta[title] ?? {
+        icon: Building2,
+        description: 'Confirmed partners building shared capacity, technology, and humanitarian outcomes.',
+      },
+    }));
+  }, [partners]);
+
+  const slides = useMemo(() => {
+    const groupSlides = groups.slice(0, 3).map((group) => ({
+      title: group.title,
+      description: group.meta.description,
+      items: group.items.slice(0, 3),
+    }));
+
+    if (groupSlides.length > 0) return groupSlides;
+
+    return [
+      {
+        title: 'Partnering for lasting impact',
+        description: 'EA-HTS brings together confirmed collaborators from industry, development, and humanitarian networks.',
+        items: partners.slice(0, 3),
+      },
+    ];
+  }, [groups, partners]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % slides.length);
+    }, 6500);
+    return () => window.clearInterval(interval);
+  }, [slides.length]);
 
   return (
     <>
@@ -28,6 +97,36 @@ export default function PartnersPage() {
             <button type="button" className="feature-button feature-button-gold" onClick={() => setIsInquiryOpen(true)}>
               Become a partner <ArrowRight />
             </button>
+            <div className="feature-hero-slides">
+              {slides.map((slide, index) => (
+                <div key={slide.title} className={`feature-slide${index === activeSlide ? ' active' : ''}`}>
+                  <div className="feature-slide-copy">
+                    <p className="feature-kicker feature-kicker-blue">{slide.title}</p>
+                    <h2>{slide.description}</h2>
+                  </div>
+                  <div className="feature-slide-logos">
+                    {slide.items.map((partner) => (
+                      <article key={partner.id} className="feature-slide-logo-card">
+                        {partner.logo ? (
+                          <img src={partner.logo} alt={partner.company} />
+                        ) : (
+                          <div className="logo-placeholder">{partner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
+                        )}
+                        <div>
+                          <strong>{partner.company}</strong>
+                          <small>{partner.category || 'Confirmed partner'}</small>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="feature-slider-dots">
+                {slides.map((_, index) => (
+                  <button key={index} type="button" className={`feature-slider-dot${index === activeSlide ? ' active' : ''}`} onClick={() => setActiveSlide(index)} aria-label={`Show slide ${index + 1}`} />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -54,30 +153,45 @@ export default function PartnersPage() {
         </section>
 
         <section className="feature-grid-section">
-          <p className="feature-kicker feature-kicker-blue">Organizations identified for engagement</p>
-          <h2>A cross-sector ecosystem</h2>
-          <p className="feature-disclosure">Prospective partners identified for engagement; participation is not yet confirmed.</p>
-          <div className="feature-tabs" role="tablist">
-            {groups.map(item => (
-              <button key={item.id} type="button" onClick={() => setActive(item.id)} aria-selected={active === item.id}>
-                {item.title}
-              </button>
-            ))}
-          </div>
-          <div className="feature-partner-panel">
-            <div>
-              <Icon />
-              <h3>{group.title}</h3>
-              <p>{group.description}</p>
-            </div>
-            <ul>
-              {group.partners.map(partner => (
-                <li key={partner}>
-                  <span>{partner.split(' ').map(word => word[0]).join('')}</span>
-                  {partner}
-                </li>
-              ))}
-            </ul>
+          <p className="feature-kicker feature-kicker-blue">Our partners</p>
+          <h2>All categories, all logos.</h2>
+          <p className="feature-disclosure">Browse partner categories and the organizations already confirmed for EA-HTS 2027.</p>
+          <div className="feature-category-list">
+            {loading ? (
+              <p>Loading partner categories…</p>
+            ) : groups.length ? (
+              groups.map((group) => {
+                const Icon = group.meta.icon;
+                return (
+                  <div key={group.title} className="feature-category-group">
+                    <div className="feature-category-header">
+                      <Icon />
+                      <div>
+                                <h3>{group.meta.title || group.title}</h3>
+                        <p>{group.meta.description}</p>
+                      </div>
+                    </div>
+                    <div className="feature-logo-grid">
+                      {group.items.map((partner) => (
+                        <article key={partner.id} className="feature-partner-logo-card">
+                          {partner.logo ? (
+                            <img src={partner.logo} alt={partner.company} />
+                          ) : (
+                            <div className="logo-placeholder">{partner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
+                          )}
+                          <div>
+                            <strong>{partner.company}</strong>
+                            <small>{partner.category}</small>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p>No confirmed partners are available yet.</p>
+            )}
           </div>
         </section>
       </main>

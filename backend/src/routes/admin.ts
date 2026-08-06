@@ -47,6 +47,7 @@ const updateRegistrationSchema = z.object({
   notes: z.string().optional(),
   paymentReference: z.string().optional(),
   paymentMethod: z.string().optional(),
+  paymentAmount: z.number().nonnegative().optional(),
   verifiedBy: z.string().optional(),
   verifiedAt: z.string().optional(),
   verificationNotes: z.string().optional(),
@@ -196,6 +197,7 @@ router.patch('/registrations/:id', async (req: AuthenticatedRequest, res, next) 
       notes: parsed.notes ?? registration.notes ?? null,
       payment_reference: parsed.paymentReference ?? registration.payment_reference ?? null,
       payment_method: parsed.paymentMethod ?? registration.payment_method ?? null,
+      payment_amount: parsed.paymentAmount ?? registration.payment_amount ?? null,
       verified_by: parsed.verifiedBy ?? registration.verified_by ?? null,
       verified_at: parsed.verifiedAt ?? registration.verified_at ?? null,
       verification_notes: parsed.verificationNotes ?? registration.verification_notes ?? null,
@@ -615,7 +617,7 @@ router.get('/settings', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', 'FINA
 router.get('/export/csv', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', 'FINANCE_ADMIN'])], async (_req: AuthenticatedRequest, res: any, next: any) => {
   try {
     const registrations = await listRegistrations();
-    const header = ['registration_number','full_name','email','phone','country','organization','participant_type','payment_status','ieee_member','created_at'];
+    const header = ['registration_number','full_name','email','phone','country','organization','participant_type','payment_status','payment_amount','ieee_member','created_at'];
     const rows = registrations.map((row) => [
       row.registration_number,
       row.full_name,
@@ -625,6 +627,7 @@ router.get('/export/csv', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', 'FI
       row.organization ?? '',
       row.participant_type,
       row.payment_status,
+      row.payment_amount != null ? String(row.payment_amount) : '',
       row.ieee_member ? 'Yes' : 'No',
       row.created_at,
     ]);
@@ -645,7 +648,7 @@ router.get('/export/excel', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', '
       SheetNames: ['Registrations'],
       Sheets: {
         Registrations: {
-          '!ref': `A1:J${registrations.length + 1}`,
+          '!ref': `A1:K${registrations.length + 1}`,
           A1: { t: 's', v: 'registration_number' },
           B1: { t: 's', v: 'full_name' },
           C1: { t: 's', v: 'email' },
@@ -654,8 +657,9 @@ router.get('/export/excel', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', '
           F1: { t: 's', v: 'organization' },
           G1: { t: 's', v: 'participant_type' },
           H1: { t: 's', v: 'payment_status' },
-          I1: { t: 's', v: 'ieee_member' },
-          J1: { t: 's', v: 'created_at' },
+          I1: { t: 's', v: 'payment_amount' },
+          J1: { t: 's', v: 'ieee_member' },
+          K1: { t: 's', v: 'created_at' },
         },
       },
     } as any;
@@ -670,8 +674,9 @@ router.get('/export/excel', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', '
       workbook.Sheets.Registrations[`F${rowIndex}`] = { t: 's', v: row.organization ?? '' };
       workbook.Sheets.Registrations[`G${rowIndex}`] = { t: 's', v: row.participant_type };
       workbook.Sheets.Registrations[`H${rowIndex}`] = { t: 's', v: row.payment_status };
-      workbook.Sheets.Registrations[`I${rowIndex}`] = { t: 's', v: row.ieee_member ? 'Yes' : 'No' };
-      workbook.Sheets.Registrations[`J${rowIndex}`] = { t: 's', v: row.created_at };
+      workbook.Sheets.Registrations[`I${rowIndex}`] = { t: 'n', v: row.payment_amount != null ? Number(row.payment_amount) : 0 };
+      workbook.Sheets.Registrations[`J${rowIndex}`] = { t: 's', v: row.ieee_member ? 'Yes' : 'No' };
+      workbook.Sheets.Registrations[`K${rowIndex}`] = { t: 's', v: row.created_at };
     });
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

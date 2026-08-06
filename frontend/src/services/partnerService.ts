@@ -13,4 +13,18 @@ export async function getPartner(id:string){return map(await request<Record<stri
 export async function createPartner(input:PartnerInput){return map(await request<Record<string,unknown>>('/admin/partners',{method:'POST',body:JSON.stringify(payload(input))}));}
 export async function updatePartner(id:string,input:Partial<PartnerInput>){return map(await request<Record<string,unknown>>(`/admin/partners/${id}`,{method:'PATCH',body:JSON.stringify(payload(input))}));}
 export async function updatePartnerStatus(id:string,status:PartnerStatus){return map(await request<Record<string,unknown>>(`/admin/partners/${id}/status`,{method:'PATCH',body:JSON.stringify({status})}));}
-export async function deletePartner(id:string){return request<void>(`/admin/partners/${id}`,{method:'DELETE'});}
+export async function deletePartner(id:string){return request<void>(`/admin/partners/${id}`,{method:'DELETE'});} 
+
+const mapPublic=(x:Record<string,unknown>)=>({
+  id:String(x.id??''),
+  company:String(x.company??x.organization??''),
+  category:String(x.category??x.level??''),
+  logo:x.logo?String(x.logo):null,
+});
+
+export type PublicPartner = ReturnType<typeof mapPublic>;
+
+export async function getPublicPartners(){
+  const r = await request<{partners:Record<string,unknown>[]}>('/partners');
+  return r.partners.map(mapPublic);
+}

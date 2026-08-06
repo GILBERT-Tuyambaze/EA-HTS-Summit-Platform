@@ -11,7 +11,7 @@ export type SessionInput = {
   location: string;
   track: string;
   speaker_id?: string | null; // kept for backward compatibility
-  speaker_ids?: string[]; // new multi-speaker support
+  speaker_ids?: string[] | null; // new multi-speaker support
 };
 
 export type SpeakerInput = {

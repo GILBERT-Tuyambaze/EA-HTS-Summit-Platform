@@ -26,6 +26,7 @@ model Registration {
   paymentStatus      String   @default("Pending") @map("payment_status")
   paymentMethod      String?  @map("payment_method")
   paymentReference   String?  @map("payment_reference")
+  paymentAmount      Float?   @map("payment_amount")
   notes              String?
   verifiedBy         String?  @map("verified_by")
   verifiedAt         DateTime? @map("verified_at")

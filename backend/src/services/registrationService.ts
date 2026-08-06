@@ -14,6 +14,7 @@ export type RegistrationInput = {
   participantType: ParticipantType;
   paymentMethod?: string;
   paymentReference?: string;
+  paymentAmount?: number;
   notes?: string;
 };
 
@@ -30,6 +31,7 @@ export type RegistrationRecord = {
   payment_status: RegistrationStatus;
   payment_method?: string | null;
   payment_reference?: string | null;
+  payment_amount?: number | null;
   notes?: string | null;
   verified_by?: string | null;
   verified_at?: string | null;
@@ -92,6 +94,7 @@ export async function createRegistration(input: RegistrationInput) {
     payment_status: 'Pending',
     payment_method: input.paymentMethod || null,
     payment_reference: input.paymentReference || null,
+    payment_amount: input.paymentAmount ?? null,
     notes: input.notes || null,
   };
 
@@ -213,6 +216,7 @@ export async function updateRegistration(id: string, updates: Partial<Registrati
       payment_status: updates.payment_status,
       payment_method: updates.payment_method,
       payment_reference: updates.payment_reference,
+      payment_amount: updates.payment_amount,
       notes: updates.notes,
       verified_by: updates.verified_by,
       verified_at: updates.verified_at,

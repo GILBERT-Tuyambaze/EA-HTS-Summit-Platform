@@ -275,6 +275,13 @@ export default function AdminRegistrationDetailPage() {
               <input value={registration.paymentReference ?? ''} onChange={(event) => setRegistration((current) => current ? ({ ...current, paymentReference: event.target.value }) : current)} />
             </label>
             <label className="field">
+              <span>Amount paid</span>
+              <input type="number" min="0" step="0.01" value={registration.paymentAmount ?? ''} onChange={(event) => {
+                const rawValue = event.target.value;
+                setRegistration((current) => current ? ({ ...current, paymentAmount: rawValue === '' ? undefined : Number(rawValue) }) : current);
+              }} />
+            </label>
+            <label className="field">
               <span>Verification notes</span>
               <textarea value={registration.verificationNotes ?? ''} rows={4} onChange={(event) => setRegistration((current) => current ? ({ ...current, verificationNotes: event.target.value }) : current)} />
             </label>
@@ -291,6 +298,7 @@ export default function AdminRegistrationDetailPage() {
               paymentStatus: registration.paymentStatus,
               paymentMethod: registration.paymentMethod,
               paymentReference: registration.paymentReference,
+              paymentAmount: registration.paymentAmount,
               verificationNotes: registration.verificationNotes,
             })} disabled={saving}>
               {saving ? 'Saving…' : 'Save changes'}

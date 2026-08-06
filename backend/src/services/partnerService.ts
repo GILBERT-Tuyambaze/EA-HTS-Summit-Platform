@@ -50,6 +50,17 @@ export async function listPartners() {
   return (data ?? []) as PartnerRecord[];
 }
 
+export async function listPublicPartners() {
+  const { data, error } = await supabaseAdmin
+    .from('partners')
+    .select('*')
+    .eq('status', 'Confirmed')
+    .order('category', { ascending: true })
+    .order('company', { ascending: true });
+  fail(error);
+  return (data ?? []) as PartnerRecord[];
+}
+
 export async function getPartner(id: string) {
   ensureId(id);
   const { data, error } = await supabaseAdmin.from('partners').select('*').eq('id', id).maybeSingle();
