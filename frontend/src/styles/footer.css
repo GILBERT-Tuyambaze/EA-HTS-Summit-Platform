@@ -29,6 +29,16 @@
   gap: 0.75rem;
 }
 
+.footer-brand-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 180ms ease;
+}
+
+.footer-brand-link:hover {
+  opacity: 0.92;
+}
+
 .footer-brand-badge {
   width: 2.5rem;
   height: 2.5rem;
@@ -95,6 +105,8 @@
   font-size: 0.82rem;
   line-height: 1.45;
   font-weight: 500;
+  text-decoration: none;
+  transition: color 180ms ease;
 }
 
 .footer-link-list a:hover,
@@ -128,6 +140,15 @@
   gap: 0.8rem;
   margin: 0;
   line-height: 1.25;
+}
+
+.footer-contact-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer-contact-link:hover {
+  color: #ffe100;
 }
 
 .footer-contact-item svg,

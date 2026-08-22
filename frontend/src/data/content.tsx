@@ -146,19 +146,4 @@ const demoCards: DemoCard[] = [
   },
 ];
 
-const partnerGroups: PartnerGroup[] = [
-  {
-    title: 'IEEE Partners',
-    items: ['IEEE HTB', 'IEEE Foundation', 'IEEE SIGHT', 'IEEE Smart Village', 'IEEE Region 8', 'IEEE Africa Council'],
-  },
-  {
-    title: 'UN Agencies',
-    items: ['UNDP', 'UNICEF', 'ITU', 'WHO', 'FAO', 'UNHCR', 'WFP'],
-  },
-  {
-    title: 'Industry & Development',
-    items: ['Microsoft', 'Google', 'Ericsson', 'Nokia', 'MTN', 'Safaricom', 'Davis & Shirtliff', 'GSMA M4D', 'World Bank', 'AfDB', 'GIZ', 'Mastercard Foundation'],
-  },
-];
-
-export { navItems, tracks, demoCards, partnerGroups };
+export { navItems, tracks, demoCards };

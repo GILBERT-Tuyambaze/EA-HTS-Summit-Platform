@@ -112,9 +112,13 @@ export default function PartnersPage() {
                         ) : (
                           <div className="logo-placeholder">{partner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
                         )}
-                        <div>
+                        <div className="feature-partner-info">
                           <strong>{partner.company}</strong>
-                          <small>{partner.category || 'Confirmed partner'}</small>
+                          {partner.details ? (
+                            <small>{partner.details}</small>
+                          ) : (
+                            <small>{partner.country || 'Confirmed partner'}</small>
+                          )}
                         </div>
                       </article>
                     ))}
@@ -179,16 +183,20 @@ export default function PartnersPage() {
                           ) : (
                             <div className="logo-placeholder">{partner.company.split(' ').map((word) => word[0]).slice(0, 2).join('').toUpperCase()}</div>
                           )}
-                          <div>
-                            <strong>{partner.company}</strong>
-                            <small>{partner.category}</small>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
+                        <div className="feature-partner-info">
+                          <strong>{partner.company}</strong>
+                          {partner.details ? (
+                            <p className="feature-partner-desc">{partner.details}</p>
+                          ) : (
+                            <small>{partner.country || 'Confirmed partner'}</small>
+                          )}
+                        </div>
+                      </article>
+                    ))}
                   </div>
-                );
-              })
+                </div>
+              );
+            })
             ) : (
               <p>No confirmed partners are available yet.</p>
             )}

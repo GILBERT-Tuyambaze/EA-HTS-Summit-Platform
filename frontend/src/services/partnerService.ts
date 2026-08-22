@@ -20,6 +20,8 @@ const mapPublic=(x:Record<string,unknown>)=>({
   company:String(x.company??x.organization??''),
   category:String(x.category??x.level??''),
   logo:x.logo?String(x.logo):null,
+  details:x.details?String(x.details):null,
+  country:x.country?String(x.country):null,
 });
 
 export type PublicPartner = ReturnType<typeof mapPublic>;
