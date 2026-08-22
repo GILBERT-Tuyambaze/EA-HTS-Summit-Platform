@@ -148,12 +148,7 @@ const Footer = () => {
                 >
                   Propose a side event
                 </button>
-                <a
-                  href="mailto:ieeeahts27@gmail.com?subject=Speaker%20Inquiry%20-%20EA-HTS%202027"
-                  className="footer-link-button"
-                >
-                  Speak at the Summit
-                </a>
+                
               </div>
             </div>
 
