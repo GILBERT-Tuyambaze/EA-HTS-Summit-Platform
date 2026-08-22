@@ -456,7 +456,9 @@ h4 {
   flex-direction: column;
   gap: 0.875rem;
 }
-
+.footer-contact-list a:hover {
+  color: yellow;
+}
 .footer-contact-item {
   display: flex;
   align-items: center;

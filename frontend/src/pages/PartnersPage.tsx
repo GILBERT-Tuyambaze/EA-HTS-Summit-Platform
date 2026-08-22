@@ -140,7 +140,7 @@ export default function PartnersPage() {
 
         <section className="feature-dark-section">
           <p className="feature-kicker">Ways to contribute</p>
-          <h2>Six opportunity areas.<br />One regional platform.</h2>
+          <h2 >Six opportunity areas.<br />One regional platform.</h2>
           <div className="feature-opportunities">
             {opportunities.map((item, index) => (
               <article key={item}>
@@ -154,7 +154,7 @@ export default function PartnersPage() {
 
         <section className="feature-grid-section">
           <p className="feature-kicker feature-kicker-blue">Our partners</p>
-          <h2>All categories, all logos.</h2>
+          
           <p className="feature-disclosure">Browse partner categories and the organizations already confirmed for EA-HTS 2027.</p>
           <div className="feature-category-list">
             {loading ? (
