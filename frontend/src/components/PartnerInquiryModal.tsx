@@ -87,7 +87,7 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
 
       // If the server returned a warning (partial failure), surface that to the user
       if (payload?.warning) {
-        setForm({ name: '', organization: '', email: '', phone: '', details: '' });
+        setForm({ name: '', organization: '', email: '', phone: '', country: '', details: '' });
         showPopup({
           type: 'info',
           title: 'Saved with warning',
@@ -97,7 +97,7 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
         return;
       }
 
-      setForm({ name: '', organization: '', email: '', phone: '', details: '' });
+      setForm({ name: '', organization: '', email: '', phone: '', country: '', details: '' });
       showPopup({
         type: 'success',
         title: 'Request received',

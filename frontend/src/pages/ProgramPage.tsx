@@ -475,6 +475,8 @@ export default function ProgramPage() {
       <ConfirmModal
         className="program-form-modal"
         open={dialog === 'session'}
+        title="Session details"
+        description="Review and save the session information."
         topBar={
           <div className="program-form-header">
             <button type="button" className="program-form-back" onClick={() => setDialog(null)}>
