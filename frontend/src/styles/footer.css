@@ -22,10 +22,14 @@
 }
 
 .footer-col-brand {
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
 }
 
 .footer-brand-header {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
 }
 
@@ -72,10 +76,15 @@
 }
 
 .footer-social-row {
+  display: flex;
+  align-items: center;
   gap: 0.7rem;
 }
 
 .footer-social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
   background: #2b2249;
@@ -87,6 +96,11 @@
   color: #0d0128;
 }
 
+.footer-social-svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .footer-section-title {
   margin: 0 0 0.95rem;
   color: #fff;
@@ -95,6 +109,9 @@
 }
 
 .footer-link-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.55rem;
 }
 
@@ -132,10 +149,14 @@
 }
 
 .footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.95rem;
 }
 
 .footer-contact-item {
+  display: flex;
   align-items: center;
   gap: 0.8rem;
   margin: 0;
