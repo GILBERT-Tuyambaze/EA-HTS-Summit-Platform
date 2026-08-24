@@ -29,7 +29,8 @@ export default function App() {
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
   useEffect(() => {
-    setIsBootstrapping(false);
+    const timer = window.setTimeout(() => setIsBootstrapping(false), 350);
+    return () => window.clearTimeout(timer);
   }, []);
 
   if (isBootstrapping) return <AppLoadingScreen />;
