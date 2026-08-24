@@ -9,5 +9,6 @@ export default defineConfig({
   }
   plugins: [react()],
   root: '.',
+  server: { allowedHosts: true },
   build: { outDir: 'dist' },
 });
