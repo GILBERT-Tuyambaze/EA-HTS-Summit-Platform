@@ -179,6 +179,33 @@ cd frontend && npm run build
 cd ../backend && npm run build
 ```
 
+## Database heartbeat
+
+The backend includes a system-health heartbeat that writes only to the dedicated
+`system_health_heartbeat` singleton. Apply
+`supabase/migrations/20260902_system_health_heartbeat.sql` before starting the
+backend. The scheduler creates randomized weekly slots from the configured
+minimum and maximum, uses bounded retries with jitter, and protects execution
+with both an in-process lock and a Postgres advisory transaction lock.
+
+Long-running deployments start one scheduler per Node process. The migration
+also installs a Supabase `pg_cron` job that checks the persisted slot hourly,
+so the heartbeat remains automated even when the backend sleeps. If the
+project does not permit `pg_cron`, invoke this protected endpoint from a
+managed external scheduler instead:
+
+```text
+POST /api/v1/admin/settings/heartbeat/run
+Authorization: Bearer <administrator access token>
+```
+
+The token must belong to an administrator with `system.health.manage`. Status
+is available at `GET /api/v1/admin/settings/heartbeat` for
+`system.health.view`. Never place service-role keys in the scheduler or
+frontend. This legitimate system-health activity does not guarantee that
+Supabase will never pause a project; Supabase applies its own platform
+inactivity rules.
+
 ---
 
 ## Current Status

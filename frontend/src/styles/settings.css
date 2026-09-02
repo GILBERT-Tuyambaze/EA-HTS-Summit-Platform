@@ -1,0 +1,259 @@
+.settings-shell {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px clamp(16px, 3vw, 40px) 56px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.settings-shell,
+.settings-shell * {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.settings-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 auto 22px;
+}
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.settings-sidebar {
+  grid-column: span 3;
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  min-width: 0;
+}
+
+.settings-main {
+  grid-column: span 9;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.settings-compact-tab {
+  font-size: 0.8em;
+}
+
+.settings-compact-tab h2,
+.settings-compact-tab h3,
+.settings-compact-tab strong {
+  font-size: min(1.5em, 1.5rem);
+}
+
+.settings-compact-tab small,
+.settings-compact-tab p,
+.settings-compact-tab li,
+.settings-compact-tab label,
+.settings-compact-tab button,
+.settings-compact-tab input,
+.settings-compact-tab select {
+  font-size: max(0.8em, 0.8rem);
+}
+
+.settings-toolbar {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.settings-toolbar-actions {
+  display: flex;
+  flex: 1 1 420px;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.settings-toolbar-actions input,
+.settings-toolbar-actions select,
+.settings-toolbar-actions button {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.settings-toolbar-actions input {
+  flex: 1 1 150px;
+}
+
+.settings-toolbar-actions select {
+  flex: 1 1 130px;
+}
+
+.settings-audit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 12px;
+  color: #546075;
+  font-size: 13px;
+}
+
+.settings-audit-meta > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-heartbeat-panel {
+  padding: 24px;
+  border: 1px solid #e6ebf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px #24395808;
+}
+
+.settings-heartbeat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.settings-heartbeat-metadata {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #e6ebf2;
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+
+.settings-heartbeat-metadata > div {
+  min-width: 0;
+  padding: 0 8px;
+}
+
+.settings-heartbeat-metadata small,
+.settings-heartbeat-metadata strong {
+  overflow-wrap: anywhere;
+}
+
+.settings-heartbeat-metadata small {
+  display: block;
+  color: #68758a;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.settings-heartbeat-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.settings-heartbeat-toggles label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-heartbeat-toggles input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #4f46e5;
+}
+
+.settings-heartbeat-config {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.settings-heartbeat-config label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-heartbeat-config input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #e6ebf2;
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: #0f172a;
+  font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+  outline: none;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-heartbeat-config input[type="number"]:focus {
+  background: #fff;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+@media (min-width: 640px) {
+  .settings-kpis,
+  .settings-heartbeat-config {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-heartbeat-metadata {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .settings-heartbeat-config {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1050px) {
+  .settings-sidebar,
+  .settings-main {
+    grid-column: 1 / -1;
+  }
+
+  .settings-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .settings-shell {
+    padding-inline: 16px;
+  }
+
+  .settings-heartbeat-metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-heartbeat-panel {
+    padding: 16px;
+  }
+}

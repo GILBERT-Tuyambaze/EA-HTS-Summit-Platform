@@ -3,6 +3,9 @@ import { ArrowLeft, Globe2, RefreshCw, ShieldAlert, ShieldCheck, Sparkles, Trash
 import ConfirmModal from '../components/ConfirmModal';
 import { usePopup } from '../contexts/PopupContext';
 import { useProgress } from '../contexts/ProgressContext';
+import { getHeartbeatStatus, runHeartbeat, updateHeartbeatConfig, type HeartbeatStatus } from '../services/heartbeatService';
+import '../styles/admin.css';
+import '../styles/settings.css';
 import {
   cancelInvitation,
   disableAdmin,
@@ -57,6 +60,7 @@ export default function SettingsPage() {
     id?: string;
   } | null>(null);
   const [roleDetail, setRoleDetail] = useState<{ id: string; name: string; permissions: string[] } | null>(null);
+  const [heartbeat, setHeartbeat] = useState<HeartbeatStatus | null>(null);
 
   const loadAccess = async () => {
     setError('');
@@ -74,6 +78,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     void loadAccess();
+    void getHeartbeatStatus().then(setHeartbeat).catch(() => undefined);
   }, []);
 
   const pendingInvites = useMemo(
@@ -231,9 +236,31 @@ export default function SettingsPage() {
   };
 
   const inviteExpired = (expiresAt: string) => new Date(expiresAt).getTime() < Date.now();
+  const formatHeartbeatDate = (value: string | null) => value
+    ? `${new Date(value).toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'UTC' })} UTC`
+    : '—';
+
+  const saveHeartbeat = async (change: Partial<HeartbeatStatus>) => {
+    try {
+      setHeartbeat(await updateHeartbeatConfig(change));
+      showPopup({ title: 'Heartbeat settings saved', type: 'success', message: 'System-health configuration updated.' });
+    } catch (caughtError) {
+      showPopup({ title: 'Heartbeat update failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to update heartbeat settings.' });
+    }
+  };
+
+  const handleRunHeartbeat = async () => {
+    try {
+      await runHeartbeat();
+      setHeartbeat(await getHeartbeatStatus());
+      showPopup({ title: 'Heartbeat complete', type: 'success', message: 'The protected system-health check finished.' });
+    } catch (caughtError) {
+      showPopup({ title: 'Heartbeat failed', type: 'error', message: caughtError instanceof Error ? caughtError.message : 'Unable to run heartbeat.' });
+    }
+  };
 
   return (
-    <div className="admin-shell">
+    <div className="admin-shell settings-shell">
       <div className="admin-header">
         <div>
           <p className="eyebrow admin-eyebrow">ACCESS CONTROL</p>
@@ -247,8 +274,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Security overview: admin users, active sessions, pending invites, security score */}
-      <div style={{ maxWidth: 1400, margin: '0 auto 16px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto 16px', width: '100%' }}>
+        <div className="settings-kpis">
           <div className="stat-card">
             <span>ADMIN USERS</span>
             <strong>{access?.users.length ?? '—'}</strong>
@@ -271,7 +298,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 18, marginTop: 12, color: '#546075', fontSize: 13 }}>
+        <div className="settings-audit-meta">
           <div>Last invitation sent: <strong>{access?.invitations?.[0]?.expires_at ? new Date(access!.invitations[0].expires_at).toLocaleString() : '—'}</strong></div>
           <div>Last login: <strong>{access?.users && access.users.length ? new Date(access.users.reduce((p, c) => (new Date(p.updated_at || p.created_at).getTime() > new Date(c.updated_at || c.created_at).getTime() ? p : c), access.users[0]).updated_at || access.users[0].created_at).toLocaleString() : '—'}</strong></div>
           <div>Failed login attempts: <strong>—</strong></div>
@@ -288,8 +315,8 @@ export default function SettingsPage() {
         </button>
       </section>
 
-      <div className="admin-content">
-        <aside className="registrations-panel">
+      <div className="admin-content settings-layout">
+        <aside className="registrations-panel settings-sidebar">
           <div className="panel-header">
             <div>
               <h2>Workspace navigation</h2>
@@ -329,8 +356,8 @@ export default function SettingsPage() {
           </div>
         </aside>
 
-        <section className="detail-panel">
-          <div className="detail-header">
+        <section className={`detail-panel settings-main ${activeTab === 'Roles' || activeTab === 'Security' ? 'settings-compact-tab' : ''}`}>
+          <div className="detail-header settings-toolbar">
             <div>
               <h2>{activeTab}</h2>
               <p style={{ color: '#6c7789', fontSize: 13, margin: 0 }}>
@@ -340,7 +367,7 @@ export default function SettingsPage() {
                 {activeTab === 'Security' && 'Review security controls and safeguard admin access.'}
               </p>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className="settings-toolbar-actions">
               <input placeholder="Search by email" value={search} onChange={(e) => setSearch(e.target.value)} style={{ padding: 8, borderRadius: 8, border: '1px solid #e6ebf2' }} />
               <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} style={{ padding: 8, borderRadius: 8, border: '1px solid #e6ebf2' }}>
                 <option value="">Filter by role</option>
@@ -518,6 +545,39 @@ export default function SettingsPage() {
             </div>
           ) : (
             <div style={{ display: 'grid', gap: 16 }}>
+              {heartbeat && (
+                <div className="settings-heartbeat-panel">
+                  <div className="settings-heartbeat-header">
+                    <div>
+                      <span>System health heartbeat</span>
+                      <strong style={{ display: 'block', marginTop: 6 }}>{heartbeat.status.toUpperCase()} · {heartbeat.heartbeat_enabled ? 'Enabled' : 'Disabled'}</strong>
+                      <small>Scheduler: {heartbeat.scheduler_running ? 'running' : 'external trigger required'}</small>
+                    </div>
+                    <button type="button" className="btn btn-primary" onClick={handleRunHeartbeat} disabled={!heartbeat.heartbeat_enabled}>Run heartbeat now</button>
+                  </div>
+                  {heartbeat.status === 'degraded' || heartbeat.status === 'retrying' || heartbeat.status === 'failed' ? <p style={{ color: '#b45309', fontWeight: 700 }}>Heartbeat degraded · {heartbeat.consecutive_failures} consecutive failure(s)</p> : null}
+                  <div className="settings-heartbeat-metadata">
+                    {[
+                      ['Last attempt', formatHeartbeatDate(heartbeat.last_attempt_at)],
+                      ['Last success', formatHeartbeatDate(heartbeat.last_success_at)],
+                      ['Last failure', formatHeartbeatDate(heartbeat.last_failure_at)],
+                      ['Next scheduled', formatHeartbeatDate(heartbeat.next_scheduled_at)],
+                    ].map(([label, value]) => <div key={label}><small>{label}</small><strong style={{ display: 'block', marginTop: 4 }}>{value}</strong></div>)}
+                  </div>
+                  <div className="settings-heartbeat-toggles">
+                    <label><input type="checkbox" checked={heartbeat.heartbeat_enabled} onChange={(event) => void saveHeartbeat({ heartbeat_enabled: event.target.checked })} /><span>Heartbeat Enabled</span></label>
+                    <label><input type="checkbox" checked={heartbeat.heartbeat_retry_enabled} onChange={(event) => void saveHeartbeat({ heartbeat_retry_enabled: event.target.checked })} /><span>Retry Enabled</span></label>
+                    <label><input type="checkbox" checked={heartbeat.heartbeat_run_on_startup} onChange={(event) => void saveHeartbeat({ heartbeat_run_on_startup: event.target.checked })} /><span>Run on Startup</span></label>
+                  </div>
+                  <div className="settings-heartbeat-config">
+                    <label><span>Min Weekly Checks</span><input type="number" min="1" max="7" value={heartbeat.heartbeat_min_checks_per_week} onChange={(event) => setHeartbeat({ ...heartbeat, heartbeat_min_checks_per_week: Number(event.target.value) })} onBlur={() => void saveHeartbeat({ heartbeat_min_checks_per_week: heartbeat.heartbeat_min_checks_per_week })} /></label>
+                    <label><span>Max Weekly Checks</span><input type="number" min="1" max="7" value={heartbeat.heartbeat_max_checks_per_week} onChange={(event) => setHeartbeat({ ...heartbeat, heartbeat_max_checks_per_week: Number(event.target.value) })} onBlur={() => void saveHeartbeat({ heartbeat_max_checks_per_week: heartbeat.heartbeat_max_checks_per_week })} /></label>
+                    <label><span>Retry Delay (Hours)</span><input type="number" min="1" max="168" value={heartbeat.heartbeat_retry_delay_hours} onChange={(event) => setHeartbeat({ ...heartbeat, heartbeat_retry_delay_hours: Number(event.target.value) })} onBlur={() => void saveHeartbeat({ heartbeat_retry_delay_hours: heartbeat.heartbeat_retry_delay_hours })} /></label>
+                    <label><span>Maximum Retries</span><input type="number" min="0" max="10" value={heartbeat.heartbeat_retry_max_attempts} onChange={(event) => setHeartbeat({ ...heartbeat, heartbeat_retry_max_attempts: Number(event.target.value) })} onBlur={() => void saveHeartbeat({ heartbeat_retry_max_attempts: heartbeat.heartbeat_retry_max_attempts })} /></label>
+                    <label><span>Retry Jitter (Minutes)</span><input type="number" min="0" max="1440" value={heartbeat.heartbeat_retry_jitter_minutes} onChange={(event) => setHeartbeat({ ...heartbeat, heartbeat_retry_jitter_minutes: Number(event.target.value) })} onBlur={() => void saveHeartbeat({ heartbeat_retry_jitter_minutes: heartbeat.heartbeat_retry_jitter_minutes })} /></label>
+                  </div>
+                </div>
+              )}
               <div className="stat-card">
                 <span>Authentication</span>
                 <strong>Password policies</strong>

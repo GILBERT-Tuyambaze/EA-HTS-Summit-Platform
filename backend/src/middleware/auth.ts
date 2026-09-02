@@ -58,3 +58,17 @@ export function requireRole(allowedRoles: AdminRole[]) {
     return next();
   };
 }
+
+const permissionRoles: Record<string, AdminRole[]> = {
+  'system.health.view': ['SUPER_ADMIN', 'REGISTRATION_ADMIN', 'FINANCE_ADMIN'],
+  'system.health.manage': ['SUPER_ADMIN'],
+};
+
+export function requirePermission(permission: string) {
+  return (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+    if (!req.admin) return next(new AppError('Authentication required.', 401));
+    const allowedRoles = permissionRoles[permission] ?? [];
+    if (!allowedRoles.includes(req.admin.role)) return next(new AppError('Insufficient permissions.', 403));
+    return next();
+  };
+}

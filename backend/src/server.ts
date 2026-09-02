@@ -13,6 +13,7 @@ import settingsRoutes from './routes/settings.js';
 import auditRoutes from './routes/audit.js';
 import accessRoutes from './routes/access.js';
 import { AppError } from './lib/errors.js';
+import { startHeartbeatScheduler } from './services/heartbeatService.js';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/admin/program', programRoutes);
 app.use('/api/admin/finance', financeRoutes);
 app.use('/api/admin/operations', operationsRoutes);
 app.use('/api/admin/settings', settingsRoutes);
+app.use('/api/v1/admin/settings', settingsRoutes);
 app.use('/api/admin/audit', auditRoutes);
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -44,6 +46,14 @@ app.use((_req, res) => {
   res.status(404).json({ message: 'Route not found.' });
 });
 
-app.listen(env.PORT, () => {
+const stopHeartbeatScheduler = await startHeartbeatScheduler();
+const server = app.listen(env.PORT, () => {
   console.log(`Backend listening on http://localhost:${env.PORT}`);
 });
+
+const shutdown = () => {
+  stopHeartbeatScheduler();
+  server.close(() => process.exit(0));
+};
+process.once('SIGTERM', shutdown);
+process.once('SIGINT', shutdown);
