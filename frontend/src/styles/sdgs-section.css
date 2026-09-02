@@ -1,10 +1,10 @@
-.section.sdg-impact-section { position: relative; isolation: isolate; background: linear-gradient(135deg, rgba(41, 42, 44, 0.514), rgba(232, 240, 248, 0.9)), url('/images/SDG') center / cover fixed; border-top: 1px solid #dbe3ed; color: #26364a; padding-block: 4rem; }
-.section.sdg-impact-section::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(16, 74, 150, 0.532), rgba(85, 167, 248, 0.58)); pointer-events: none; }
+.section.sdg-impact-section { position: relative; isolation: isolate; background: linear-gradient(135deg, rgba(54, 54, 54, 0.349), rgba(232, 240, 248, 0.9)), url('/images/SDG') center / cover fixed; border-top: 1px solid #dbe3ed; color: #26364a; padding-block: 4rem; }
+.section.sdg-impact-section::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(1, 33, 75, 0.692), rgba(0, 122, 245, 0.58)); pointer-events: none; }
 .sdg-impact-container { max-width: 1280px; }
 .sdg-impact-header { margin-bottom: 1.75rem; }
-.sdg-impact-eyebrow { display: block; margin-bottom: 0.5rem; color: #818cf8; font: 700 0.72rem/1.2 monospace; letter-spacing: 0.14em; text-transform: uppercase; }
-.sdg-impact-header h2 { max-width: 30rem; margin-bottom: 0.75rem; color: #071b3a; font-size: clamp(1.9rem, 3vw, 2.8rem); letter-spacing: -0.04em; }
-.sdg-impact-header p { max-width: 42rem; margin: 0; color: #536276; font-size: 1.1rem; line-height: 1.75; }
+.sdg-impact-eyebrow { display: block; margin-bottom: 0.5rem; color: #fcac00; font: 700 1rem/1.2 monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+.sdg-impact-header h2 { max-width: 30rem; margin-bottom: 0.75rem; color: #ebeff5; font-size: clamp(1.9rem, 3vw, 2.8rem); letter-spacing: -0.04em; }
+.sdg-impact-header p { max-width: 42rem; margin: 0; color: #ece8e8; font-size: 1.1rem; line-height: 1.75; }
 .sdg-impact-layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2rem; align-items: start; }
 .sdg-matrix { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55rem; }
 .sdg-matrix-button { position: relative; display: flex; width: 100%; height: 9rem; flex-direction: column; align-items: center; justify-content: flex-end; gap: 0.3rem; overflow: hidden; padding: 0.65rem 0.3rem 0.55rem; border: 1px solid #dbe3ed; border-radius: 0.65rem; background: rgba(255, 255, 255, 0.78); color: #536276; text-align: center; cursor: pointer; transition: border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; }
