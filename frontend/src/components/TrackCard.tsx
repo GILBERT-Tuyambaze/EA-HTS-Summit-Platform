@@ -1,9 +1,26 @@
 import { Track } from '../types';
 
-const TrackCard = ({ track }: { track: Track }) => (
-  <div className={`track-card reveal${track.className ? ` ${track.className}` : ''}`}>
-    <div className="track-number">{track.number}</div>
-    <div className="track-icon">{track.icon}</div>
+const TrackCard = ({
+  track,
+  isActive,
+  onSelect,
+}: {
+  track: Track;
+  isActive?: boolean;
+  onSelect?: () => void;
+}) => (
+  <button
+    type="button"
+    className={`track-card reveal${track.className ? ` ${track.className}` : ''}${isActive ? ' active' : ''}`}
+    onMouseEnter={onSelect}
+    onFocus={onSelect}
+    onClick={onSelect}
+    aria-pressed={isActive}
+  >
+    <div className="track-card-header">
+      <div className="track-icon">{track.icon}</div>
+      <span className="track-number">{track.number}</span>
+    </div>
     <h3>{track.title}</h3>
     <div className="track-tags">
       {track.tags.map((tag) => (
@@ -12,7 +29,7 @@ const TrackCard = ({ track }: { track: Track }) => (
         </span>
       ))}
     </div>
-  </div>
+  </button>
 );
 
 export default TrackCard;

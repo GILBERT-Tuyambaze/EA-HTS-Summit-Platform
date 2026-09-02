@@ -4,13 +4,8 @@ const AboutSection = () => (
   <section className="section about-section" id="about-preview">
     <div className="container">
       <div className="about-grid">
-        <div className="about-image reveal">
-          <img
-            src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=1200&q=80"
-            alt="Technology innovation in East Africa"
-            loading="lazy"
-          />
-          <div className="about-image-badge">Kigali, Rwanda</div>
+        <div className="about-visual reveal" aria-label="Technology innovation in East Africa" role="img">
+          <div className="about-visual-badge">Kigali, Rwanda</div>
         </div>
 
         <div className="about-content reveal reveal-delay-1">
@@ -18,7 +13,7 @@ const AboutSection = () => (
             <div className="eyebrow about-eyebrow">ABOUT THE SUMMIT</div>
             <h2>Where engineering meets humanitarian impact.</h2>
             <p>
-              East Africa is experiencing rapid digital transformation alongside increasing humanitarian challenges — climate disasters, food insecurity, public health emergencies, displacement, and digital inequality. Technology is one of the most powerful enablers for addressing these challenges, but success requires collaboration, contextual understanding, and sustainable implementation.
+              East Africa is experiencing rapid digital transformation alongside increasing humanitarian challenges ,climate disasters, food insecurity, public health emergencies, displacement, and digital inequality. Technology is one of the most powerful enablers for addressing these challenges, but success requires collaboration, contextual understanding, and sustainable implementation.
             </p>
           </div>
 

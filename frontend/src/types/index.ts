@@ -8,6 +8,10 @@ export type Track = {
   title: string;
   icon: JSX.Element;
   tags: string[];
+  summary?: string;
+  detailTags?: string[];
+  speakers?: string[];
+  meta?: string;
   className?: string;
 };
 

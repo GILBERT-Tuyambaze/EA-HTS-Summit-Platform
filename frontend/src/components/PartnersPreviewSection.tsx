@@ -75,7 +75,7 @@ const PartnersPreviewSection = () => {
               <div className="eyebrow partners-eyebrow">
                 <Handshake size={14} /> Confirmed Collaborators & Allies
               </div>
-              <h2>Building this together.</h2>
+
               <p>
                 Leading organizations collaborating with EA-HTS 2027 to advance humanitarian technology across East Africa.
               </p>
