@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 import { usePopup } from '../contexts/PopupContext';
 import { countries } from '../data/countries';
 
@@ -128,29 +129,25 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
             <p>{currentCopy.description}</p>
           </div>
           <button type="button" className="partner-modal-close" onClick={onClose} aria-label="Close partner request form">
-            ×
+            <X size={18} />
           </button>
         </div>
 
         <form className="partner-modal-form" onSubmit={handleSubmit}>
           <label className="partner-field">
-            <span>Your name</span>
-            <input name="name" value={form.name} onChange={handleChange} required placeholder="Full name" />
+            <span>Full name <b>*</b></span>
+            <input name="name" value={form.name} onChange={handleChange} required placeholder="Jane Doe" />
           </label>
           <label className="partner-field">
-            <span>Organization</span>
-            <input name="organization" value={form.organization} onChange={handleChange} required placeholder="Company or institution" />
+            <span>Email address <b>*</b></span>
+            <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="jane@example.com" />
           </label>
           <label className="partner-field">
-            <span>Email address</span>
-            <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="name@example.com" />
+            <span>Organization <b>*</b></span>
+            <input name="organization" value={form.organization} onChange={handleChange} required placeholder="Tech Foundation" />
           </label>
           <label className="partner-field">
-            <span>Phone number</span>
-            <input name="phone" value={form.phone} onChange={handleChange} placeholder="Optional" />
-          </label>
-          <label className="partner-field">
-            <span>Country</span>
+            <span>Country <b>*</b></span>
             <select name="country" value={form.country} onChange={handleChange} required>
               <option value="">Select country</option>
               {countries.map((country) => (
@@ -158,9 +155,13 @@ export default function PartnerInquiryModal({ open, onClose, type = 'partnership
               ))}
             </select>
           </label>
+          <label className="partner-field partner-field-full">
+            <span>Phone number <em>(Optional)</em></span>
+            <input name="phone" value={form.phone} onChange={handleChange} placeholder="+250 788 000 000" />
+          </label>
           <label className="partner-field partner-field-textarea">
             <span>{currentCopy.detailLabel}</span>
-            <textarea name="details" value={form.details} onChange={handleChange} required placeholder={currentCopy.placeholder} rows={5} />
+            <textarea name="details" value={form.details} onChange={handleChange} required placeholder={currentCopy.placeholder} rows={3} />
           </label>
 
           <div className="partner-modal-actions">

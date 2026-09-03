@@ -168,7 +168,8 @@
   cursor: pointer;
 }
 
-.footer-contact-link:hover {
+.footer-contact-link:hover ,
+.footer-contact-item:hover {
   color: #ffe100;
 }
 
