@@ -5,6 +5,9 @@ const AboutSection = () => (
     <div className="container">
       <div className="about-grid">
         <div className="about-visual reveal" aria-label="Technology innovation in East Africa" role="img">
+          <video autoPlay muted loop playsInline aria-hidden="true">
+            <source src="/animo-wheel-carousel-720p.webm" type="video/webm" />
+          </video>
           <div className="about-visual-badge">Kigali, Rwanda</div>
         </div>
 
