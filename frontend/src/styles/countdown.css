@@ -1,4 +1,5 @@
 .countdown-card {
+  min-width: 0;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -7,6 +8,7 @@
   text-align: center;
   width: 100%;
   max-width: 420px;
+  overflow: hidden;
 }
 
 .countdown-label {
@@ -20,11 +22,12 @@
 
 .countdown-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
 .countdown-unit {
+  min-width: 0;
   background: rgba(255, 255, 255, 0.06);
   border-radius: var(--radius);
   padding: 1rem 0.5rem;
@@ -44,4 +47,28 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-top: 0.35rem;
+}
+
+@media (max-width: 560px) {
+  .countdown-card {
+    max-width: none;
+    padding: 1rem;
+  }
+
+  .countdown-grid {
+    gap: 0.3rem;
+  }
+
+  .countdown-unit {
+    padding: 0.75rem 0.2rem;
+  }
+
+  .countdown-number {
+    font-size: clamp(1.35rem, 8vw, 1.65rem);
+  }
+
+  .countdown-text {
+    font-size: 0.56rem;
+    letter-spacing: 0.04em;
+  }
 }

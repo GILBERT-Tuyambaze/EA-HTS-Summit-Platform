@@ -49,11 +49,9 @@ const Hero = () => {
   return (
     <section className="hero" id="hero">
       <div className="hero-bg">
-        <img
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1920&q=80"
-          alt="Humanitarian technology in action"
-          loading="eager"
-        />
+        <video autoPlay muted loop playsInline aria-hidden="true">
+          <source src="/animo-orbit-globe-720p.webm" type="video/webm" />
+        </video>
       </div>
       <div className="hero-overlay" />
 
