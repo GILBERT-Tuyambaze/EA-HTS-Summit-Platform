@@ -275,7 +275,7 @@ router.post('/send-email', [requireRole(['SUPER_ADMIN', 'REGISTRATION_ADMIN', 'F
         organization: registration.organization ?? 'Not provided',
         payment_reference: registration.payment_reference ?? '',
         eventName: 'IEEE East Africa Humanitarian Technology Summit 2027',
-        eventDate: '27–29 January 2027',
+        eventDate: '14–16 January 2027',
         venue: 'Kigali, Rwanda',
         supportEmail: process.env.BREVO_SENDER_EMAIL ?? 'support@ea-hts-summit.org',
         deadline: 'Please settle by the earliest available payment window.',

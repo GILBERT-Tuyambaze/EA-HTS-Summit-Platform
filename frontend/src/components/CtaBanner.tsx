@@ -10,7 +10,7 @@ const CtaBanner = () => {
     <section className="cta-banner">
     <div className="container">
       <div className="cta-content reveal">
-        <span className="cta-eyebrow">JANUARY 27–29, 2027</span>
+        <span className="cta-eyebrow">JANUARY 14–16, 2027</span>
         <h2>We'll see you in Kigali.</h2>
         <p>
           Join 350+ engineers, researchers, humanitarian actors, and innovators at East Africa's premier humanitarian technology event.

@@ -233,7 +233,7 @@ export default function RegisterPage() {
               <p>Join IEEE’s flagship humanitarian technology event in Kigali and connect with researchers, practitioners, startups, and policymakers working to build resilient communities.</p>
             </div>
             <div className="register-hero-card">
-              <div className="register-hero-item"><UserRound /> <span>27–29 January 2027</span></div>
+              <div className="register-hero-item"><UserRound /> <span>14–16 January 2027</span></div>
               <div className="register-hero-item"><Mail /> <span>Kigali, Rwanda</span></div>
               <div className="register-hero-item"><ShieldCheck /> <span>Innovate • Connect • Impact</span></div>
             </div>
@@ -363,7 +363,7 @@ export default function RegisterPage() {
                 <p className="eyebrow dark">Event overview</p>
                 <h3>IEEE East Africa Humanitarian Technology Summit 2027</h3>
                 <ul>
-                  <li>27–29 January 2027</li>
+                  <li>14–16 January 2027</li>
                   <li>Kigali, Rwanda</li>
                   <li>Innovate · Connect · Impact</li>
                 </ul>

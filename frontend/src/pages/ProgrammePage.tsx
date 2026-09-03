@@ -40,7 +40,7 @@ function ProgrammeHero() {
 
       <motion.aside className="programme-overview-card" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .18 }}>
         <h2><CalendarDays />Summit Overview</h2>
-        <p><CalendarDays />January 27–29, 2027</p>
+        <p><CalendarDays />January 14–16, 2027</p>
         <p><MapPin />Kigali, Rwanda</p>
         <div className="programme-overview-stats">
           <span><CalendarDays /><b>3</b>Days</span>

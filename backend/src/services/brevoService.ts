@@ -7,7 +7,7 @@ function eventTitle() {
 }
 
 function eventDetails() {
-  return '27–29 January 2027<br />Kigali, Rwanda';
+  return '14–16 January 2027<br />Kigali, Rwanda';
 }
 
 function registrationReceivedHtml({

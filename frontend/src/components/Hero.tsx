@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Countdown from './Countdown';
 
-const targetDateString = '2027-01-27T08:00:00+02:00';
+const targetDateString = '2027-01-14T08:00:00+02:00';
 
 const Hero = () => {
   const [countdown, setCountdown] = useState({ days: '--', hours: '--', mins: '--', secs: '--' });
@@ -74,7 +74,7 @@ const Hero = () => {
           <div className="hero-meta">
             <div className="hero-meta-item">
               <Calendar size={18} />
-              January 27–29, 2027
+              January 14–16, 2027
             </div>
             <div className="hero-meta-item">
               <MapPin size={18} />

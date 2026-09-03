@@ -28,6 +28,9 @@ const summitStats = [
 
 function AboutHero() {
   return <section className="about-immersive-hero">
+    <video className="about-hero-video" autoPlay muted loop playsInline aria-hidden="true">
+      <source src="/animo-ticker-loop-720p.mp4" type="video/mp4" />
+    </video>
     <div className="about-hero-orbit orbit-one" /><div className="about-hero-orbit orbit-two" />
     <div className="container about-hero-layout">
       <motion.div className="about-hero-copy" initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: .65 }}>
@@ -43,7 +46,7 @@ function AboutHero() {
         </div>
         <div className="about-hero-insight-right">
           <dl className="about-hero-meta insight-meta">
-            <div><CalendarDays /><dt>January 27–29, 2027</dt><dd>Kigali, Rwanda</dd></div>
+            <div><CalendarDays /><dt>January 14–16, 2027</dt><dd>Kigali, Rwanda</dd></div>
             <div><Globe2 /><dt>10+</dt><dd>Countries</dd></div>
             <div><Users /><dt>350+</dt><dd>Participants</dd></div>
           </dl>

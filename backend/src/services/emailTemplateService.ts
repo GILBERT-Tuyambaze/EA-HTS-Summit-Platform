@@ -153,7 +153,7 @@ const defaultTemplates: Omit<EmailTemplate, 'created_at' | 'updated_at'>[] = [
                       <tr><td style="font-weight:bold;color:#003366;">Payment status</td><td style="color:#003366;">{payment_status}</td></tr>
                       <tr><td style="font-weight:bold;color:#003366;">Country</td><td style="color:#003366;">{country}</td></tr>
                     </table>
-                    <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#003366;">Important dates: 27–29 January 2027 in Kigali, Rwanda.</p>
+                    <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#003366;">Important dates: 14–16 January 2027 in Kigali, Rwanda.</p>
                     <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#003366;">If you have questions, contact us at <a href="mailto:{support_email}" style="color:#006699;text-decoration:none;">{support_email}</a>.</p>
                   </td>
                 </tr>

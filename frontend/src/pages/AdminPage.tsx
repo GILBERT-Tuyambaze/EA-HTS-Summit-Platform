@@ -106,7 +106,7 @@ function AdminDashboard({ onOpenEmailCenter }: { onOpenEmailCenter: () => void }
   const { showPopup } = usePopup();
   const progressHelpers = useProgress();
 
-  const daysUntilSummit = Math.max(0, Math.ceil((new Date('2027-01-27T00:00:00+02:00').getTime() - Date.now()) / 86_400_000));
+  const daysUntilSummit = Math.max(0, Math.ceil((new Date('2027-01-14T00:00:00+02:00').getTime() - Date.now()) / 86_400_000));
 
   useEffect(() => {
     const to = setTimeout(() => setDebouncedSearch(searchTerm), 300);
