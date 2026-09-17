@@ -36,11 +36,7 @@ const NavBar = ({ items }: NavBarProps) => {
       <div className="nav-inner">
         <Link to="/" className="nav-logo" onClick={closeMenu}>
           <div className="nav-logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-              <path d="M2 12h20" />
-            </svg>
+            <img src="/images/IEEE_EAST_AFRICA_Logo.png" alt="IEEE East Africa Logo" className="nav-logo-img" />
           </div>
           <div className="nav-logo-text">
             EA-HTS 2027

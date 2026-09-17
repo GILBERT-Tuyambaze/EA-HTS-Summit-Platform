@@ -47,11 +47,7 @@ const Footer = () => {
             <div className="footer-col footer-col-brand">
               <Link to="/" className="footer-brand-header footer-brand-link" aria-label="EA-HTS 2027 Home">
                 <div className="footer-brand-badge">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="footer-brand-icon">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 3v18" />
-                    <path d="M3 12h18" />
-                  </svg>
+                  <img src="/images/IEEE_EAST_AFRICA_Logo.png" alt="IEEE East Africa Logo" className="footer-brand-logo-img" />
                 </div>
                 <div>
                   <div className="footer-brand-title">EA-HTS 2027</div>
