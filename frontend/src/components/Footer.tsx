@@ -56,7 +56,7 @@ const Footer = () => {
               </Link>
 
               <p className="footer-brand-copy">
-                The IEEE East African Humanitarian Technology Summit — a regional flagship platform uniting humanitarian, development, engineering, academic, and innovation communities across East Africa.
+                The IEEE East African Humanitarian Technology Summit, a regional flagship platform uniting humanitarian, development, engineering, academic, and innovation communities across East Africa.
               </p>
 
               <div className="footer-social-row">

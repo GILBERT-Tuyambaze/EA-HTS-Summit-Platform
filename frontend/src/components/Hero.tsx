@@ -68,7 +68,7 @@ const Hero = () => {
           </h1>
 
           <p className="hero-subtitle">
-            East Africa&apos;s premier humanitarian technology summit — convening engineers, researchers, humanitarian actors, and innovators to develop and scale solutions that create measurable social impact.
+            East Africa&apos;s premier humanitarian technology summit, convening engineers, researchers, humanitarian actors, and innovators to develop and scale solutions that create measurable social impact.
           </p>
 
           <div className="hero-meta">
