@@ -62,6 +62,10 @@ const Hero = () => {
             IEEE Humanitarian Technologies Board
           </div>
 
+          <p className="hero-welcome">
+            Welcome to the East Africa Humanitarian Technology Summit 2027 — a gathering for bold ideas, meaningful connections, and technology that serves humanity.
+          </p>
+
           <h1>
             Technology for
             <span className="highlight">Humanity.</span>
