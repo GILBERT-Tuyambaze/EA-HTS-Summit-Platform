@@ -46,7 +46,7 @@ function AboutHero() {
         </div>
         <div className="about-hero-insight-right">
           <dl className="about-hero-meta insight-meta">
-            <div><CalendarDays /><dt>January 14–16, 2027</dt><dd>Kigali, Rwanda</dd></div>
+            <div><CalendarDays /><dt>April 15-17, 2027</dt><dd>Kigali, Rwanda</dd></div>
             <div><Globe2 /><dt>10+</dt><dd>Countries</dd></div>
             <div><Users /><dt>350+</dt><dd>Participants</dd></div>
           </dl>

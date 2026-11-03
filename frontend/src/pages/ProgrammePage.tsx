@@ -5,9 +5,9 @@ import { GlassCard, SectionTitle, fadeUp } from '../components/PagePrimitives';
 import '../styles/pages.css';
 
 const days = [
-  { day: 'Day 1', date: 'Wednesday, 27 January', theme: 'Inspire', summary: 'Set the shared ambition for humanitarian technology in East Africa.', sessions: [['08:00', 'Morning', 'Registration & welcome coffee', 'Connect with fellow delegates and explore the Summit space.'], ['09:30', 'Morning', 'Opening Ceremony & Regional Keynote', 'A shared call to design technology that serves communities.'], ['14:00', 'Afternoon', 'Leadership panels', 'Collaborative problem framing with regional and global leaders.'], ['18:30', 'Evening', 'Welcome reception', 'An evening of introductions, exchange and networking.']] },
-  { day: 'Day 2', date: 'Thursday, 28 January', theme: 'Collaborate', summary: 'Move from ideas to practical exchange, learning and co-creation.', sessions: [['08:30', 'Morning', 'Innovation keynotes', 'Grounded lessons from technology deployed in real contexts.'], ['10:30', 'Morning', 'Technical demonstrations', 'See resilient, inclusive solutions in action.'], ['13:30', 'Afternoon', 'Workshops & roundtables', 'Hands-on learning with researchers, builders and practitioners.'], ['18:30', 'Evening', 'Industry mixer', 'Create new partnerships across sectors and borders.']] },
-  { day: 'Day 3', date: 'Friday, 29 January', theme: 'Impact', summary: 'Celebrate the builders and commitments carrying the work forward.', sessions: [['09:00', 'Morning', 'Startup Challenge', 'Hear from emerging ventures building for people and planet.'], ['11:00', 'Morning', 'Impact showcases', 'Community-led examples of meaningful technology adoption.'], ['14:00', 'Afternoon', 'Awards & closing ceremony', 'Recognise excellence and set the next shared commitments.'], ['17:00', 'Evening', 'Community farewell', 'Continue the conversation beyond Kigali.']] },
+  { day: 'Day 1', date: 'Thursday, 15 April', theme: 'Inspire', summary: 'Set the shared ambition for humanitarian technology in East Africa.', sessions: [['08:00', 'Morning', 'Registration & welcome coffee', 'Connect with fellow delegates and explore the Summit space.'], ['09:30', 'Morning', 'Opening Ceremony & Regional Keynote', 'A shared call to design technology that serves communities.'], ['14:00', 'Afternoon', 'Leadership panels', 'Collaborative problem framing with regional and global leaders.'], ['18:30', 'Evening', 'Welcome reception', 'An evening of introductions, exchange and networking.']] },
+  { day: 'Day 2', date: 'Friday, 16 April', theme: 'Collaborate', summary: 'Move from ideas to practical exchange, learning and co-creation.', sessions: [['08:30', 'Morning', 'Innovation keynotes', 'Grounded lessons from technology deployed in real contexts.'], ['10:30', 'Morning', 'Technical demonstrations', 'See resilient, inclusive solutions in action.'], ['13:30', 'Afternoon', 'Workshops & roundtables', 'Hands-on learning with researchers, builders and practitioners.'], ['18:30', 'Evening', 'Industry mixer', 'Create new partnerships across sectors and borders.']] },
+  { day: 'Day 3', date: 'Saturday, 17 April', theme: 'Impact', summary: 'Celebrate the builders and commitments carrying the work forward.', sessions: [['09:00', 'Morning', 'Startup Challenge', 'Hear from emerging ventures building for people and planet.'], ['11:00', 'Morning', 'Impact showcases', 'Community-led examples of meaningful technology adoption.'], ['14:00', 'Afternoon', 'Awards & closing ceremony', 'Recognise excellence and set the next shared commitments.'], ['17:00', 'Evening', 'Community farewell', 'Continue the conversation beyond Kigali.']] },
 ];
 const tracks = ['Resilience', 'AI for Good', 'Data & Response', 'Connected Communities', 'HealthTech', 'ClimateTech', 'Inclusive Innovation', 'Policy & Ethics'];
 const fallbackSpeakers = [
@@ -40,7 +40,7 @@ function ProgrammeHero() {
 
       <motion.aside className="programme-overview-card" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .18 }}>
         <h2><CalendarDays />Summit Overview</h2>
-        <p><CalendarDays />January 14–16, 2027</p>
+        <p><CalendarDays />April 15-17, 2027</p>
         <p><MapPin />Kigali, Rwanda</p>
         <div className="programme-overview-stats">
           <span><CalendarDays /><b>3</b>Days</span>

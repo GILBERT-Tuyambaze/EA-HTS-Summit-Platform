@@ -1,5 +1,5 @@
 const eventTitle = 'IEEE East Africa Humanitarian Technology Summit 2027';
-const eventDetails = '14–16 January 2027<br />Kigali, Rwanda';
+const eventDetails = 'April 15-17, 2027<br />Kigali, Rwanda';
 
 export function registrationReceivedTemplate(
   participantName: string,
